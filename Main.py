@@ -18,7 +18,7 @@ from BNOSensor import connectSensor
 from BNOSensor import callibrateSensor
 from BNOSensor import getStates
 # ESC.py files.
-from ESC import connectMotors
+from ESC import connectMotors # Don't use this one for now. Software pwm. 
 from ESC import connectMotorsPigpio
 # Vicon.py files
 from Vicon import connectVicon
@@ -48,8 +48,6 @@ time.sleep(2)
 
 # Set pin numbers and connect the motors.
 pins = [24, 26, 17, 16] # using GPIO.BCM numbering
-#motors = connectMotors(pins)
-subprocess.run(["sudo","pigpiod"]) # This line should run a command line code to set up pigpio
 mypi = connectMotorsPigpio(pins)
 print("Motors connected and callibrated!")
 
@@ -58,18 +56,38 @@ print("Motors connected and callibrated!")
 print("Starting program. To kill drone, kill the program using Ctrl+C.")
 # Turn on motors.
 
+# Controller loop.
+killDrone = false; # When true, kill drone.
+while not killDrone:
+
+
+# Sets drone to zero speed at end of program.
+for pin in pins:
+    mypi.set_servo_pulsewidth(pin, 1100)
+
+
+
+
+
+
+
+### EXAMPLE CODES. Remove triple quotations to run. 
+
+# Turn on max speed and constantly ask for next speed.
+"""
 for pin in pins:
     mypi.set_servo_pulsewidth(pin, maxval)
 while True:
     speed = input("enter speed: ")
     for pin in pins:
         mypi.set_servo_pulsewidth(pin, speed)
-
+"""
 # Print yaw.
-#while True:
-    #yaw, roll, pitch, w_x, w_y, w_z, a_x, a_y, a_z = getStates(bno)
-    #print(yaw)
-
+"""
+while True:
+    yaw, roll, pitch, w_x, w_y, w_z, a_x, a_y, a_z = getStates(bno)
+    print(yaw)
+"""
 
 
 
