@@ -4,6 +4,7 @@
 # Dependencies: BNOSensor.py, ESC.py
 
 # Import needed libraries.
+import numpy
 import logging
 import sys
 import time
@@ -18,6 +19,8 @@ from BNOSensor import getStates
 # ESC.py files.
 from ESC import connectMotors
 from ESC import connectMotorsPigpio
+# Vicon.py files
+from Vicon import connectVicon
 
 maxval = 1900
 minval = 1100
@@ -31,6 +34,17 @@ print("Sensor connected!")
 # Callibrate the sensor.
 #callibrateSensor(bno)
 print("Sensor callibrated!\n\n")
+# Connect to Vicon
+vicon_client, mytracker = connectVicon("192.168.0.101")
+OBJECT_NAME = "LoCicero_test_box_2"
+
+# Get Object position
+position = mytracker.get_position(OBJECT_NAME) # (latency, frame number, [[object_name,object_name,x,y,z,roll,pitch,yaw]]) (mm, rad)
+print(f"Position: {position}")
+time.sleep(2)
+
+
+
 # Set pin numbers and connect the motors.
 pins = [24, 26, 17, 16] # using GPIO.BCM numbering
 #motors = connectMotors(pins)
