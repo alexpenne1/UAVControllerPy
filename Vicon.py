@@ -14,4 +14,6 @@ def connectVicon(VICON_TRACKER_IP):
     mytracker = tools.ObjectTracker(VICON_TRACKER_IP)
     return vicon_client, mytracker
     #VICON_TRACKER_IP = "192.168.0.101"
+
+
     

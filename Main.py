@@ -22,6 +22,11 @@ from ESC import connectMotors # Don't use this one for now. Software pwm.
 from ESC import connectMotorsPigpio
 # Vicon.py files
 from Vicon import connectVicon
+# Controller.py files
+from Controller import EstimateRates
+from Controller import CalculateControlActionLQR
+
+
 
 maxval = 1900
 minval = 1100
@@ -56,9 +61,34 @@ print("Motors connected and callibrated!")
 print("Starting program. To kill drone, kill the program using Ctrl+C.")
 # Turn on motors.
 
+
+# Set setpoint.
+setpoint = [0, 0, .25, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+positions = numpy.array()
+numpy.append(mytracker.get_position(OBJECT_NAME)) # Sets first position. Need this to get rate.
+
+times = numpy.array()
+numpy.append(times, time.time()) # Gets first time. Need this to get rate.
+
+inputs = numpy.array()
+
+
 # Controller loop.
 killDrone = false; # When true, kill drone.
 while not killDrone:
+    # (latency, frame number, [[object_name,object_name,x,y,z,roll,pitch,yaw]]) (mm, rad)
+    numpy.append(positions, mytracker.get_position(OBJECT_NAME)) # add position to array
+    numpy.append(times, time.time()) # add time to array
+    rates = EstimateRates(positions, times) # Calculate rates.
+    numpy.append(inputs, CalculateControlActionLQR(setpoint, positions, times, rates)) # Calculate control and add to array.
+
+    # Which values to take from VICON?
+    # Which values to take from sensor?
+    
+
+
+
 
 
 # Sets drone to zero speed at end of program.
