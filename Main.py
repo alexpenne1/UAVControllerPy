@@ -8,6 +8,7 @@ import numpy
 import logging
 import sys
 import time
+import subprocess
 import RPi.GPIO as GPIO
 import pigpio as pigpio
 from Adafruit_BNO055 import BNO055
@@ -48,6 +49,7 @@ time.sleep(2)
 # Set pin numbers and connect the motors.
 pins = [24, 26, 17, 16] # using GPIO.BCM numbering
 #motors = connectMotors(pins)
+subprocess.run(["sudo","pigpiod"]) # This line should run a command line code to set up pigpio
 mypi = connectMotorsPigpio(pins)
 print("Motors connected and callibrated!")
 
