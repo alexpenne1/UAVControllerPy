@@ -19,9 +19,9 @@ def GetLinearStates(tracker, object_name):
 # (latency, frame number, [[object_name,object_name,x,y,z,roll,pitch,yaw]]) (mm, rad)
     positions = tracker.get_position(object_name)
     # Extract x, y, z and return
-    x = positions[2][0][2]
-    y = positions[2][0][3]
-    z = positions[2][0][4]
+    x = positions[2][0][2]/1000
+    y = positions[2][0][3]/1000
+    z = positions[2][0][4]/1000
     return x, y, z
 
 
