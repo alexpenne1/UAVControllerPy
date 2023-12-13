@@ -13,7 +13,7 @@ def EstimateRates(x, y, z, cur_time, prev_state):
     dzdt = (z - prev_state[2]) / dt
     return dxdt, dydt, dzdt
 
-def CalculateControlAction_LQR(state,xe):
+def CalculateControlAction_LQR(x,xe):
     K = np.array([[-707.11, 0, 500, 0, -4183.61, -500, -1050.29, 0, 689.22, 0, -841.9, -766.82],
          [0, -707.11, 500, -4195.64, 0, 500, 0, -1051.12, 689.22, -846.73, 0, 766.82],
          [707.11, 0, 500, 0, 4183.61, -500, 1050.29, 0, 689.22, 0, 841.9, -766.82],
