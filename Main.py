@@ -22,9 +22,11 @@ from ESC import connectMotors # Don't use this one for now. Software pwm.
 from ESC import connectMotorsPigpio
 # Vicon.py files
 from Vicon import connectVicon
+from Vicon import GetLinearStates
 # Controller.py files
 from Controller import EstimateRates
-from Controller import CalculateControlActionLQR
+from Controller import CalculateControlAction_LQR
+from Controller import CalculateControlAction_TestFeedback
 
 
 
@@ -35,14 +37,14 @@ minval = 1100
 # UART mode must be turned on (PS1 pin = HIGH).
 bno = BNO055.BNO055(serial_port='/dev/serial0', rst=18)
 # Connect the sensor.
-#connectSensor(bno)
+connectSensor(bno)
 print("Sensor connected!")
 # Callibrate the sensor.
 #callibrateSensor(bno)
 print("Sensor callibrated!\n\n")
 # Connect to Vicon
 vicon_client, mytracker = connectVicon("192.168.0.101")
-OBJECT_NAME = "LoCicero_test_box_2"
+OBJECT_NAME = "LoCicero_RPI_Drone"
 
 # Get Object position
 position = mytracker.get_position(OBJECT_NAME) # (latency, frame number, [[object_name,object_name,x,y,z,roll,pitch,yaw]]) (mm, rad)
@@ -64,27 +66,35 @@ print("Starting program. To kill drone, kill the program using Ctrl+C.")
 
 # Set setpoint.
 setpoint = [0, 0, .25, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
-positions = npp.array()
-np.append(mytracker.get_position(OBJECT_NAME)) # Sets first position. Need this to get rate.
-
-times = np.array()
-np.append(times, time.time()) # Gets first time. Need this to get rate.
-
-inputs = np.array()
-
-
+# get initial position from VICON.
+init_x, init_y, init_z = GetLinearStates(mytracker, OBJECT_NAME) 
+# Get initial time.
+init_time = time.time()
+# Make previous state vector.
+prev_state = [init_x, init_y, init_z, init_time]
 # Controller loop.
 try:
     while True:
-        # (latency, frame number, [[object_name,object_name,x,y,z,roll,pitch,yaw]]) (mm, rad)
-        np.append(positions, mytracker.get_position(OBJECT_NAME)) # add position to array
-        np.append(times, time.time()) # add time to array
-        rates = EstimateRates(positions, times) # Calculate rates.
-        np.append(inputs, CalculateControlActionLQR(setpoint, positions, times, rates)) # Calculate control and add to array.
-
-        # Which values to take from VICON?
-        # Which values to take from sensor?
+        # Get x, y, z from VICON.
+        x, y, z = GetLinearStates(mytracker, OBJECT_NAME)
+        # Get current time.
+        cur_time = time.time()
+        # Estimate rates.
+        dxdt, dydt, dzdt = EstimateRates(x, y, z, cur_time, prev_state)
+        # Get attitude and rates from sensor.
+        yaw, roll, pitch, w_x, w_y, w_z, a_x, a_y, a_z = getStates(bno)
+        # Make state vector.
+        state = [x, y, z, yaw, pitch, roll, dxdt, dydt, dzdt, w_x, w_y, w_z]
+        #print(state)
+        # Get input from state.
+        inputs = CalculateControlAction_LQR(state)
+        print(inputs)
+        # Change motor speeds.
+        for i in range(0,4):
+            mypi.set_servo_pulsewidth(pins[i], inputs[i])
+        # Make current state the previous.                
+        prev_state = [x, y, z, cur_time]
+        
 except KeyboardInterrupt: # This should allow us to exit the while loop by pressing Ctrl+C
     pass
     
