@@ -97,8 +97,8 @@ with open('data.csv', 'w', newline='') as myfile:
             for i in range(0,4):
                 mypi.set_servo_pulsewidth(pins[i], inputs[i])
             # write time, states, and inputs to a csv file
-            np.savetxt(myfile, np.concatenate(np.array([cur_time]), state, inputs), delimiter=',', fmt='%f')
-            #csvwriter.writerow([cur_time, x, y, z, roll, pitch, yaw, inputs[0], inputs[1], inputs[2], inputs[3]])
+            #np.savetxt(myfile, np.concatenate(np.array([cur_time]), state, inputs), delimiter=',', fmt='%f')
+            csvwriter.writerow([cur_time, x, y, z, roll, pitch, yaw, list(inputs)])
             # Make current state the previous.                
             prev_state = [x, y, z, cur_time]
         
