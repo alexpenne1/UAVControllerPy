@@ -26,7 +26,7 @@ from Vicon import GetLinearStates
 # Controller.py files
 from Controller import EstimateRates
 from Controller import CalculateControlAction_LQR
-from Controller import CalculateControlAction_TestFeedback
+#from Controller import CalculateControlAction_TestFeedback
 
 
 
@@ -91,10 +91,14 @@ try:
         #print(state)
         # Get input from state.
         inputs = CalculateControlAction_LQR(state,setpoint)
+        print(state)
         print(inputs)
+        time.sleep(5)
+        '''
         # Change motor speeds.
         for i in range(0,4):
             mypi.set_servo_pulsewidth(pins[i], inputs[i])
+        '''
         # Make current state the previous.                
         prev_state = [x, y, z, cur_time]
         
