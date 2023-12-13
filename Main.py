@@ -82,6 +82,7 @@ try:
         x, y, z = GetLinearStates(mytracker, OBJECT_NAME)
         # Get current time.
         cur_time = time.time()
+        print(cur_time)
         # Estimate rates.
         dxdt, dydt, dzdt = EstimateRates(x, y, z, cur_time, prev_state)
         # Get attitude and rates from sensor.
