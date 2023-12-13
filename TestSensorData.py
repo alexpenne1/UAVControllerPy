@@ -40,7 +40,7 @@ bno = BNO055.BNO055(serial_port='/dev/serial0', rst=18)
 connectSensor(bno)
 print("Sensor connected!")
 # Callibrate the sensor.
-callibrateSensor(bno)
+#callibrateSensor(bno)
 print("Sensor callibrated!\n\n")
 # Connect to Vicon
 vicon_client, mytracker = connectVicon("192.168.0.101")
