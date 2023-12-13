@@ -26,8 +26,8 @@ def CalculateControlAction_LQR(state):
     rho = 7.77e7
     sigma = 7.19e-4 
     u = ue - np.matmul(K,(x - xe))
-    PW = 800/(rho*vmax)*(np.power((u + rho*sigma),2) - (rho*sigma)^2) + 1100
-    return PW[:,0]
+    PW = 800/(rho*vmax)*(np.power((u + rho*sigma),2) - np.power(rho*sigma,2)) + 1100
+    return PW
 
 def CalculateControlAction_TestFeedback(state):
     # Initialize input array.
