@@ -14,7 +14,7 @@ def EstimateRates(x, y, z, cur_time, prev_state):
     return dxdt, dydt, dzdt
 
 def CalculateControlAction_LQR(state):
-    x = state.reshape(12, 1)
+    x =np.array([[state[0]],[state[1]],[state[2]],[state[3]],[state[4]],[state[5]],[state[6]],[state[7]],[state[8]],[state[9]],[state[10]],[state[11]]])
     
     K = np.array([[-707.11, 0, 500, 0, -4183.61, -500, -1050.29, 0, 689.22, 0, -841.9, -766.82],
          [0, -707.11, 500, -4195.64, 0, 500, 0, -1051.12, 689.22, -846.73, 0, 766.82],
@@ -25,8 +25,8 @@ def CalculateControlAction_LQR(state):
     vmax = 12.5
     rho = 7.77e7
     sigma = 7.19e-4 
-    u = ue - K*(x - xe)
-    PW = 800/(rho*vmax)*(u + rho*sigma)^2 - (rho*sigma)^2) + 1100
+    u = ue - np.matmul(K,(x - xe))
+    PW = 800/(rho*vmax)*(np.power((u + rho*sigma),2) - (rho*sigma)^2) + 1100
     return PW[:,0]
 
 def CalculateControlAction_TestFeedback(state):

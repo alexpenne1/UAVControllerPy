@@ -47,7 +47,7 @@ def connectMotorsPigpio(pins):
     
     input("Check that battery is disconnected from the base, then press enter.")
     for pin in pins:
-        mypi.set_servo_pulsewidth(pin, maxval)
+        mypi.set_servo_pulsewidth(pin, minval)
         
     input("Connect the battery. Press enter when done.")
     for pin in pins:
