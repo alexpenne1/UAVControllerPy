@@ -64,10 +64,12 @@ print("Starting program. To kill drone, kill the program using Ctrl+C.")
 # Turn on motors.
 
 
-# Set setpoint.
-setpoint = [0, 0, .25, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 # get initial position from VICON.
 init_x, init_y, init_z = GetLinearStates(mytracker, OBJECT_NAME) 
+# get initial position from BNO
+init_yaw, init_roll, init_pitch, init_w_x, init_w_y, init_w_z, init_a_x, init_a_y, init_a_z = getStates(bno)
+# Set setpoint (1 ft above initial position)
+setpoint = [init_x, init_y, init_z+.3, init_roll, init_pitch, init_yaw, 0, 0, 0, 0, 0, 0]
 # Get initial time.
 init_time = time.time()
 # Make previous state vector.
@@ -84,8 +86,8 @@ try:
         # Get attitude and rates from sensor.
         yaw, roll, pitch, w_x, w_y, w_z, a_x, a_y, a_z = getStates(bno)
         # Make state vector.
-        state = [x, y, z, yaw, pitch, roll, dxdt, dydt, dzdt, w_x, w_y, w_z]
-        print(state)
+        state = [x, y, z, roll, pitch, yaw, dxdt, dydt, dzdt, w_x, w_y, w_z]
+        print(state-setpoint)
         time.sleep(5)
         # Make current state the previous.                
         prev_state = [x, y, z, cur_time]
