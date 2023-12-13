@@ -64,10 +64,13 @@ print("Starting program. To kill drone, kill the program using Ctrl+C.")
 # Turn on motors.
 
 
+# get initial lineaer position from VICON.
+init_x, init_y, init_z = GetLinearStates(mytracker, OBJECT_NAME)
+# get initial orientation from BNO
+init_yaw, init_roll, init_pitch, init_w_x, init_w_y, init_w_z, init_a_x, init_a_y, init_a_z = getStates(bno) 
 # Set setpoint.
-setpoint = [0, 0, .25, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-# get initial position from VICON.
-init_x, init_y, init_z = GetLinearStates(mytracker, OBJECT_NAME) 
+target_height = .3 # .3m = 1ft
+setpoint = np.transpose(np.array([[init_x, init_y, init_z+target_height, init_roll, init_pitch, init_yaw, 0, 0, 0, 0, 0, 0]]))
 # Get initial time.
 init_time = time.time()
 # Make previous state vector.
@@ -84,10 +87,10 @@ try:
         # Get attitude and rates from sensor.
         yaw, roll, pitch, w_x, w_y, w_z, a_x, a_y, a_z = getStates(bno)
         # Make state vector.
-        state = [x, y, z, yaw, pitch, roll, dxdt, dydt, dzdt, w_x, w_y, w_z]
+        state =np.array([[x],[y],[z],[roll],[pitch],[yaw],[dxdt],[dydt],[dzdt],[w_x],[w_y],[w_z]])
         #print(state)
         # Get input from state.
-        inputs = CalculateControlAction_LQR(state)
+        inputs = CalculateControlAction_LQR(state,setpoint)
         print(inputs)
         # Change motor speeds.
         for i in range(0,4):

@@ -13,15 +13,12 @@ def EstimateRates(x, y, z, cur_time, prev_state):
     dzdt = (z - prev_state[2]) / dt
     return dxdt, dydt, dzdt
 
-def CalculateControlAction_LQR(state):
-    x =np.array([[state[0]],[state[1]],[state[2]],[state[3]],[state[4]],[state[5]],[state[6]],[state[7]],[state[8]],[state[9]],[state[10]],[state[11]]])
-    
+def CalculateControlAction_LQR(state,xe):
     K = np.array([[-707.11, 0, 500, 0, -4183.61, -500, -1050.29, 0, 689.22, 0, -841.9, -766.82],
          [0, -707.11, 500, -4195.64, 0, 500, 0, -1051.12, 689.22, -846.73, 0, 766.82],
          [707.11, 0, 500, 0, 4183.61, -500, 1050.29, 0, 689.22, 0, 841.9, -766.82],
          [0, 707.11, 500, 4195.64, 0, 500, 0, 1051.12, 689.22, 846.73, 0, 766.82]])
     ue = np.transpose(4414.91*np.array([[1,1,1,1]]))
-    xe = np.transpose(np.array([[0, 0, .5, 0, 0, 0, 0, 0, 0, 0, 0, 0]]))
     vmax = 12.5
     rho = 7.77e7
     sigma = 7.19e-4 
@@ -29,6 +26,7 @@ def CalculateControlAction_LQR(state):
     PW = 800/(rho*vmax)*(np.power((u + rho*sigma),2) - np.power(rho*sigma,2)) + 1100
     return PW
 
+'''
 def CalculateControlAction_TestFeedback(state):
     # Initialize input array.
     inputs = np.zeros(4)
@@ -44,3 +42,4 @@ def CalculateControlAction_TestFeedback(state):
 def DutyCycle2PulseWidth(DC):
     return (((DC - 0.05) / 0.05) * 800) + 1100
 
+'''
