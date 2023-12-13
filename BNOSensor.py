@@ -1,4 +1,5 @@
 import logging
+from math import pi
 import sys
 import time
 import RPi.GPIO as GPIO 
@@ -10,6 +11,12 @@ def getStates(bno):
     yaw, roll, pitch = bno.read_euler()
     w_x, w_y, w_z = bno.read_gyroscope()
     a_x, a_y, a_z = bno.read_accelerometer()
+    yaw = yaw/360*2*pi
+    roll = roll/360*2*pi
+    pitch = pitch/360*2*pi
+    w_x = w_x/360*2*pi
+    w_y = w_y/360*2*pi
+    w_z = w_z/360*2*pi
     return yaw, roll, pitch, w_x, w_y, w_z, a_x, a_y, a_z
 
 # Connects the BNO and prints general information.
