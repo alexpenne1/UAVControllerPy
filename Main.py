@@ -9,6 +9,7 @@ import logging
 import sys
 import time
 import subprocess
+import csv
 import RPi.GPIO as GPIO
 import pigpio as pigpio
 from Adafruit_BNO055 import BNO055
@@ -76,31 +77,33 @@ init_time = time.time()
 # Make previous state vector.
 prev_state = [init_x, init_y, init_z, init_time]
 # Controller loop.
-try:
-    while True:
-        # Get x, y, z from VICON.
-        x, y, z = GetLinearStates(mytracker, OBJECT_NAME)
-        # Get current time.
-        cur_time = time.time()
-        print(cur_time)
-        # Estimate rates.
-        dxdt, dydt, dzdt = EstimateRates(x, y, z, cur_time, prev_state)
-        # Get attitude and rates from sensor.
-        yaw, roll, pitch, dyaw, droll, dpitch, a_x, a_y, a_z = getStates(bno)
-        # Make state vector.
-        state =np.array([[x],[y],[z],[roll],[pitch],[yaw],[dxdt],[dydt],[dzdt],[droll],[dpitch],[dyaw]])
-        #print(state)
-        # Get input from state.
-        inputs = CalculateControlAction_LQR(state,setpoint)
-        # Change motor speeds.
-        for i in range(0,4):
-            mypi.set_servo_pulsewidth(pins[i], inputs[i])
+with open('data.csv', 'w', newline='') as myfile:
+    csvwriter = csv.writer(myfile)
+    try:
+        while True:
+            # Get x, y, z from VICON.
+            x, y, z = GetLinearStates(mytracker, OBJECT_NAME)
+            # Get current time.
+            cur_time = time.time()
+            print(cur_time)
+            # Estimate rates.
+            dxdt, dydt, dzdt = EstimateRates(x, y, z, cur_time, prev_state)
+            # Get attitude and rates from sensor.
+            yaw, roll, pitch, dyaw, droll, dpitch, a_x, a_y, a_z = getStates(bno)
+            # Make state vector.
+            state =np.array([[x],[y],[z],[roll],[pitch],[yaw],[dxdt],[dydt],[dzdt],[droll],[dpitch],[dyaw]])
+            # Get input from state.
+            inputs = CalculateControlAction_LQR(state,setpoint)
+            # Change motor speeds.
+            for i in range(0,4):
+                mypi.set_servo_pulsewidth(pins[i], inputs[i])
+            # write time, states, and inputs to a csv file
+            csvwriter.writerow([cur_time, x, y, z, roll, pitch, yaw, inputs[0], inputs[1], inputs[2], inputs[3]])
+            # Make current state the previous.                
+            prev_state = [x, y, z, cur_time]
         
-        # Make current state the previous.                
-        prev_state = [x, y, z, cur_time]
-        
-except KeyboardInterrupt: # This should allow us to exit the while loop by pressing Ctrl+C
-    pass
+    except KeyboardInterrupt: # This should allow us to exit the while loop by pressing Ctrl+C
+        pass
     
     
 # Sets drone to zero speed at end of program.
