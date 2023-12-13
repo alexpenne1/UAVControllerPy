@@ -87,7 +87,8 @@ try:
         yaw, roll, pitch, w_x, w_y, w_z, a_x, a_y, a_z = getStates(bno)
         # Make state vector.
         state = [x, y, z, roll, pitch, yaw, dxdt, dydt, dzdt, w_x, w_y, w_z]
-        print(state-setpoint)
+        dx = state-setpoint
+        print(dx)
         time.sleep(5)
         # Make current state the previous.                
         prev_state = [x, y, z, cur_time]
