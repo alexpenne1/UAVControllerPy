@@ -87,9 +87,9 @@ try:
         yaw, roll, pitch, w_x, w_y, w_z, a_x, a_y, a_z = getStates(bno)
         # Make state vector.
         state = [x, y, z, roll, pitch, yaw, dxdt, dydt, dzdt, w_x, w_y, w_z]
-        x =np.array([[state[0]],[state[1]],[state[2]],[state[3]],[state[4]],[state[5]],[state[6]],[state[7]],[state[8]],[state[9]],[state[10]],[state[11]]])
-        setpoint = np.array([[setpoint[0]],[setpoint[1]],[setpoint[2]],[setpoint[3]],[setpoint[4]],[setpoint[5]],[setpoint[6]],[setpoint[7]],[setpoint[8]],[setpoint[9]],[setpoint[10]],[setpoint[11]]])
-        dx = x-setpoint
+        state_array =np.array([[state[0]],[state[1]],[state[2]],[state[3]],[state[4]],[state[5]],[state[6]],[state[7]],[state[8]],[state[9]],[state[10]],[state[11]]])
+        setpoint_array = np.array([[setpoint[0]],[setpoint[1]],[setpoint[2]],[setpoint[3]],[setpoint[4]],[setpoint[5]],[setpoint[6]],[setpoint[7]],[setpoint[8]],[setpoint[9]],[setpoint[10]],[setpoint[11]]])
+        dx = xstate_array-setpoint_array
         print(dx)
         time.sleep(5)
         # Make current state the previous.                
