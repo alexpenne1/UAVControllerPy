@@ -51,7 +51,12 @@ def RectifyYaw(yaw,prev_yaw):
         yaw = yaw - 2*pi
     elif yaw < prev_yaw - pi:
         yaw = yaw + 2*pi
-    return yaw    
+    return yaw 
+
+def SaveData(cur_time, state, inputs):
+    save_vec = np.transpose(np.concatenate((np.array([[cur_time]]), state, inputs),axis=0))
+    np.savetxt(myfile, save_vec, delimiter=',', fmt='%f')
+    return   
 
 def CalculateControlAction_LQR(x,xe):
     K = np.array([[-707.11, 0, 500, 0, -4183.61, -500, -1050.29, 0, 689.22, 0, -841.9, -766.82],
@@ -65,21 +70,3 @@ def CalculateControlAction_LQR(x,xe):
     u = ue - np.matmul(K,(x - xe))
     PW = 800/(rho*vmax)*(np.power((u + rho*sigma),2) - np.power(rho*sigma,2)) + 1100
     return PW
-
-'''
-def CalculateControlAction_TestFeedback(state):
-    # Initialize input array.
-    inputs = np.zeros(4)
-    # First two motors proportional to yaw.
-    inputs[0] = DutyCycle2PulseWidth((state[3])*.05/(360) + 0.05)
-    inputs[1] = DutyCycle2PulseWidth((state[3])*.05/(360) + 0.05)
-    # Second two motors proportional to z.
-    inputs[2] = DutyCycle2PulseWidth((state[2] - 40)/1740*.05 + 0.05)
-    inputs[3] = DutyCycle2PulseWidth((state[2] - 40)/1740*.05 + 0.05)
-    # Return inputs array.
-    return inputs
-
-def DutyCycle2PulseWidth(DC):
-    return (((DC - 0.05) / 0.05) * 800) + 1100
-
-'''

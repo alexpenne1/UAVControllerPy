@@ -37,3 +37,13 @@ def connectMotorsPigpio(pins):
     print("Starting program. To kill drone, kill the program using Ctrl+C.")
     time.sleep(1)
     return mypi
+
+def writeMotors(mypi,pins,inputs):
+    for i in range(0,4):
+                mypi.set_servo_pulsewidth(pins[i], inputs[i])
+    return
+
+def StopMotors(mypi,pins):
+    for pin in pins:
+        mypi.set_servo_pulsewidth(pin, 1100)
+    print("Motors Stopped.")

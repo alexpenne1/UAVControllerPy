@@ -31,19 +31,11 @@ with open('data.csv', 'w', newline='') as myfile:
     try:
         while True:
             state, cur_time = Sensors.getState(bno, mytracker, object_name, filter_states, state, cur_time)
-
-            # Get input from state.
-            inputs = ctrl.CalculateControlAction_LQR(state,setpoint)
-            # Change motor speeds.
-            for i in range(0,4):
-                mypi.set_servo_pulsewidth(pins[i], inputs[i])
-            # write time, states, and inputs to a csv file
-            save_vec = np.transpose(np.concatenate((np.array([[cur_time]]), state, inputs),axis=0))
-            np.savetxt(myfile, save_vec, delimiter=',', fmt='%f')
+            inputs          = ctrl.CalculateControlAction_LQR(state, setpoint)
+            ESC.writeMotors(mypi,pins,inputs)
+            ctrl.SaveData(cur_time, state, inputs)
         
-    except KeyboardInterrupt: # This should allow us to exit the while loop by pressing Ctrl+C
+    except KeyboardInterrupt:
         pass
     
-# Sets drone to zero speed at end of program.
-for pin in pins:
-    mypi.set_servo_pulsewidth(pin, 1100)
+ESC.StopMotors(mypi,pins)
