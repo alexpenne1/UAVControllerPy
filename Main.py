@@ -69,6 +69,7 @@ with open('data.csv', 'w', newline='') as myfile:
             # Calculate latency
             dt = cur_time - prev_state[3]
             # Filter Position
+            print(filter_states[0:2])
             x, y, z, filter_states[0:2] = ctrl.FilterViconPosition(x, y, z, dt, filter_states[0:2])
             # Estimate rates.
             dxdt, dydt, dzdt = ctrl.EstimateRates(x, y, z, dt, prev_state)
