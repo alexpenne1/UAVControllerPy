@@ -75,12 +75,12 @@ init_time = time.time()
 # Make previous state vector.
 prev_state = [init_x, init_y, init_z, init_time]
 # Initialize Vicon filters
-xfilterstate = 0
-yfilterstate = 0
-zfilterstate = 0
-dxfilterstate = 0
-dyfilterstate = 0
-dzfilterstate = 0
+fstatex = 0
+fstatey = 0
+fstatez = 0
+fstatedx = 0
+fstatedy = 0
+fstatedz = 0
 # Controller loop.
 with open('data.csv', 'w', newline='') as myfile:
     #csvwriter = csv.writer(myfile)

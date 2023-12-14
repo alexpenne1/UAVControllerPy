@@ -8,9 +8,9 @@ def FilterViconPosition(x, y, z, dt, fstatex, fstatey, fstatez):
     K = 1  # filter gain
     xf      = fstatex                     # output current filter state
     fstatex = (1-dt/T)*fstatex + K*dt/T*x # update filter state
-    yf      = fstatex                     # output current filter state
+    yf      = fstatey                     # output current filter state
     fstatey = (1-dt/T)*fstatey + K*dt/T*y # update filter state
-    zf      = fstatex                     # output current filter state
+    zf      = fstatez                     # output current filter state
     fstatez = (1-dt/T)*fstatez + K*dt/T*z # update filter state
     return xf, yf, zf, fstatex, fstatey, fstatez
 
