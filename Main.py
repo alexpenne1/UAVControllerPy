@@ -23,10 +23,6 @@ bno, mytracker, object_name = Sensors.init(calibrate)
 
 pins, mypi = ESC.init()
 
-# START PROGRAM
-print("Starting program. To kill drone, kill the program using Ctrl+C.")
-time.sleep(1)
-
 setpoint, state, filter_states, cur_time = ctrl.init(bno, mytracker, object_name)
 
 # Controller loop.
@@ -34,27 +30,7 @@ with open('data.csv', 'w', newline='') as myfile:
     #csvwriter = csv.writer(myfile)
     try:
         while True:
-            # Get x, y, z from VICON.
-            x, y, z = Vicon.GetLinearStates(mytracker, object_name)
-            # Get attitude and rates from sensor.
-            yaw, pitch, roll, dyaw, dpitch, droll, a_x, a_y, a_z = BNO.getStates(bno)
-            # Get current time.
-            prev_time = cur_time
-            cur_time = time.time()
-            dt = cur_time - prev_time
-            # Filter Position
-            x, y, z, filter_states[0:3] = ctrl.FilterViconPosition(x, y, z, dt, filter_states[0:3])
-            # Estimate rates.
-            dxdt, dydt, dzdt = ctrl.EstimateRates(x, y, z, dt, state[0:3])
-            # Filter Rates
-            dxdt, dydt, dzdt, filter_states[3:6] = ctrl.FilterViconRates(dxdt, dydt, dzdt, dt, filter_states[3:6])
-            
-            #yaw = BNO.RectifyYaw(yaw,prev_state[4])
-            
-            # Make state vector.
-            state =np.array([[x],[y],[z],[roll],[pitch],[yaw],[dxdt],[dydt],[dzdt],[droll],[dpitch],[dyaw]])
-
-
+            state, cur_time = Sensors.getState(bno, mytracker, object_name, filter_states, state)
 
             # Get input from state.
             inputs = ctrl.CalculateControlAction_LQR(state,setpoint)

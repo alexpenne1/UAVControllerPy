@@ -1,3 +1,4 @@
+from math import pi
 import numpy as np
 import logging
 import sys
@@ -44,6 +45,13 @@ def FilterViconRates(dxdt, dydt, dzdt, dt, filter_states):
     dzf      = filter_states[2]                     # output current filter state
     filter_states[2] = (1-dt/T)*filter_states[2] + K*dt/T*dzdt # update filter state
     return dxf, dyf, dzf, filter_states
+
+def RectifyYaw(yaw,prev_yaw):
+    if yaw > prev_yaw + pi:
+        yaw = yaw - 2*pi
+    elif yaw < prev_yaw - pi:
+        yaw = yaw + 2*pi
+    return yaw    
 
 def CalculateControlAction_LQR(x,xe):
     K = np.array([[-707.11, 0, 500, 0, -4183.61, -500, -1050.29, 0, 689.22, 0, -841.9, -766.82],

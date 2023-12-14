@@ -34,4 +34,6 @@ def connectMotorsPigpio(pins):
         mypi.set_servo_pulsewidth(pin, minval)
     print("4 beeps indicates drone is armed. Otherwise, needs callibration.")
     print("End arming sequence.\n\n")
+    print("Starting program. To kill drone, kill the program using Ctrl+C.")
+    time.sleep(1)
     return mypi
