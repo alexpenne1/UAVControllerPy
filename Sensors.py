@@ -1,3 +1,4 @@
+from Adafruit_BNO055 import BNO055
 import BNOSensor as BNO
 import Vicon
 
