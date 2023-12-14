@@ -2,6 +2,8 @@ import numpy as np
 import logging
 import sys
 import time
+import BNOSensor as BNO
+import Vicon
 
 def init(bno, mytracker, object_name):
     x, y, z = Vicon.GetLinearStates(mytracker, object_name)
