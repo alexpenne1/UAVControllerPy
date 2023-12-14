@@ -27,7 +27,7 @@ pins, mypi = ESC.init()
 print("Starting program. To kill drone, kill the program using Ctrl+C.")
 time.sleep(1)
 
-setpoint, state, filter_states = ctrl.init(bno, mytracker, object_name)
+setpoint, state, filter_states, cur_time = ctrl.init(bno, mytracker, object_name)
 
 # Controller loop.
 with open('data.csv', 'w', newline='') as myfile:

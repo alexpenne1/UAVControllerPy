@@ -13,7 +13,7 @@ def init(bno, mytracker, object_name):
     target_height = .3 # setpoint 1ft above initial
     setpoint = np.transpose(np.array([[x, y, z+target_height, roll, pitch, yaw, 0, 0, 0, 0, 0, 0]]))
     filter_states = np.array([0, 0, 0, 0, 0, 0]) # Initialize Vicon filters
-    return setpoint, state, filter_states
+    return setpoint, state, filter_states, cur_time
 
 def FilterViconPosition(x, y, z, dt, filter_states):
     T = .1 # filter time constant
