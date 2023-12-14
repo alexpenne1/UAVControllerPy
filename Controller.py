@@ -3,16 +3,16 @@ import logging
 import sys
 import time
 
-def FilterViconPosition(x, y, z, dt, fstatex, fstatey, fstatez):
+def FilterViconPosition(x, y, z, dt, filter_states):
     T = .1 # filter time constant
     K = 1  # filter gain
-    xf      = fstatex                     # output current filter state
-    fstatex = (1-dt/T)*fstatex + K*dt/T*x # update filter state
-    yf      = fstatey                     # output current filter state
-    fstatey = (1-dt/T)*fstatey + K*dt/T*y # update filter state
-    zf      = fstatez                     # output current filter state
-    fstatez = (1-dt/T)*fstatez + K*dt/T*z # update filter state
-    return xf, yf, zf, fstatex, fstatey, fstatez
+    xf      = filter_states[0]                     # output current filter state
+    filter_states[0] = (1-dt/T)*filter_states[0] + K*dt/T*x # update filter state
+    yf      = filter_states[1]                     # output current filter state
+    filter_states[1] = (1-dt/T)*filter_states[1] + K*dt/T*y # update filter state
+    zf      = filter_states[2]                     # output current filter state
+    filter_states[2] = (1-dt/T)*filter_states[2] + K*dt/T*z # update filter state
+    return xf, yf, zf, filter_states
 
 def EstimateRates(x, y, z, dt, prev_state):
     # Naive Differentiation (amplifies noise)
@@ -22,16 +22,16 @@ def EstimateRates(x, y, z, dt, prev_state):
     dzdt = (z - prev_state[2]) / dt
     return dxdt, dydt, dzdt
 
-def FilterViconRates(dxdt, dydt, dzdt, dt, fstatedx, fstatedy, fstatedz):
+def FilterViconRates(dxdt, dydt, dzdt, dt, filter_states):
     T = .25 # filter time constant
     K = 1  # filter gain
-    dxf      = fstatedx                     # output current filter state
-    fstatedx = (1-dt/T)*fstatedx + K*dt/T*dxdt # update filter state
-    dyf      = fstatedy                     # output current filter state
-    fstatedy = (1-dt/T)*fstatedy + K*dt/T*dydt # update filter state
-    dzf      = fstatedz                     # output current filter state
-    fstatedz = (1-dt/T)*fstatedz + K*dt/T*dzdt # update filter state
-    return dxf, dyf, dzf, fstatedx, fstatedy, fstatedz
+    dxf      = filter_states[0]                     # output current filter state
+    filter_states[0] = (1-dt/T)*filter_states[0] + K*dt/T*dxdt # update filter state
+    dyf      = filter_states[1]                     # output current filter state
+    filter_states[1] = (1-dt/T)*filter_states[1] + K*dt/T*dydt # update filter state
+    dzf      = filter_states[2]                     # output current filter state
+    filter_states[2] = (1-dt/T)*filter_states[2] + K*dt/T*dzdt # update filter state
+    return dxf, dyf, dzf, filter_states
 
 def CalculateControlAction_LQR(x,xe):
     K = np.array([[-707.11, 0, 500, 0, -4183.61, -500, -1050.29, 0, 689.22, 0, -841.9, -766.82],

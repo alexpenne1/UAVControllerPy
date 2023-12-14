@@ -32,8 +32,8 @@ vicon_client, mytracker = Vicon.connectVicon("192.168.0.101")
 object_name = "LoCicero_RPI_Drone"
 
 # Get Object position
-position = mytracker.get_position(object_name) # (latency, frame number, [[object_name,object_name,x,y,z,roll,pitch,yaw]]) (mm, rad)
-print(f"Position: {position}")
+#position = mytracker.get_position(object_name) # (latency, frame number, [[object_name,object_name,x,y,z,roll,pitch,yaw]]) (mm, rad)
+#print(f"Position: {position}")
 
 # Set pin numbers and connect the motors.
 pins = [24, 26, 17, 16] # using GPIO.BCM numbering
@@ -56,12 +56,7 @@ init_time = time.time()
 # Make previous state vector.
 prev_state = [init_x, init_y, init_z, init_time, init_yaw]
 # Initialize Vicon filters
-fstatex = 0
-fstatey = 0
-fstatez = 0
-fstatedx = 0
-fstatedy = 0
-fstatedz = 0
+filter_states = np.array([0, 0, 0, 0, 0, 0])
 # Controller loop.
 with open('data.csv', 'w', newline='') as myfile:
     #csvwriter = csv.writer(myfile)
@@ -74,11 +69,11 @@ with open('data.csv', 'w', newline='') as myfile:
             # Calculate latency
             dt = cur_time - prev_state[3]
             # Filter Position
-            x, y, z, fstatex, fstatey, fstatez = ctrl.FilterViconPosition(x, y, z, dt, fstatex, fstatey, fstatez)
+            x, y, z, filter_states[0:2] = ctrl.FilterViconPosition(x, y, z, dt, filter_states[0:2])
             # Estimate rates.
             dxdt, dydt, dzdt = ctrl.EstimateRates(x, y, z, dt, prev_state)
             # Filter Rates
-            dxdt, dydt, dzdt, fstatedx, fstatedy, fstatedz = ctrl.FilterViconRates(dxdt, dydt, dzdt, dt, fstatedx, fstatedy, fstatedz)
+            dxdt, dydt, dzdt, filter_states[3:5] = ctrl.FilterViconRates(dxdt, dydt, dzdt, dt, filter_states[3:5])
             # Get attitude and rates from sensor.
             yaw, pitch, roll, dyaw, dpitch, droll, a_x, a_y, a_z = BNO.getStates(bno)
             
