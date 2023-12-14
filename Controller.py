@@ -3,6 +3,16 @@ import logging
 import sys
 import time
 
+def init(bno, mytracker, object_name):
+    x, y, z = Vicon.GetLinearStates(mytracker, object_name)
+    yaw, roll, pitch, dyaw, droll, dpitch, a_x, a_y, a_z = BNO.getStates(bno)
+    cur_time = time.time() 
+    state = np.transpose(np.array([[x, y, z, roll, pitch, yaw, 0, 0, 0, droll, dpitch, dyaw]]))
+    target_height = .3 # setpoint 1ft above initial
+    setpoint = np.transpose(np.array([[x, y, z+target_height, roll, pitch, yaw, 0, 0, 0, 0, 0, 0]]))
+    filter_states = np.array([0, 0, 0, 0, 0, 0]) # Initialize Vicon filters
+    return setpoint, state, filter_states
+
 def FilterViconPosition(x, y, z, dt, filter_states):
     T = .1 # filter time constant
     K = 1  # filter gain

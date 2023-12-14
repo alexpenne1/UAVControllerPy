@@ -25,21 +25,10 @@ pins, mypi = ESC.init()
 
 # START PROGRAM
 print("Starting program. To kill drone, kill the program using Ctrl+C.")
-# Turn on motors.
+time.sleep(1)
 
-# get initial lineaer position from VICON.
-init_x, init_y, init_z = Vicon.GetLinearStates(mytracker, object_name)
-# get initial orientation from BNO
-init_yaw, init_roll, init_pitch, init_dyaw, init_droll, init_dpitch, init_a_x, init_a_y, init_a_z = BNO.getStates(bno)
-# get time
-cur_time = time.time() 
-# Make initial state vector
-state = np.transpose(np.array([[init_x, init_y, init_z, init_roll, init_pitch, init_yaw, 0, 0, 0, init_droll, init_dpitch, init_dyaw]]))
-# Set setpoint.
-target_height = .3 # .3m = 1ft
-setpoint = np.transpose(np.array([[init_x, init_y, init_z+target_height, init_roll, init_pitch, init_yaw, 0, 0, 0, 0, 0, 0]]))
-# Initialize Vicon filters
-filter_states = np.array([0, 0, 0, 0, 0, 0])
+setpoint, state, filter_states = ctrl.init(bno, mytracker, object_name)
+
 # Controller loop.
 with open('data.csv', 'w', newline='') as myfile:
     #csvwriter = csv.writer(myfile)
