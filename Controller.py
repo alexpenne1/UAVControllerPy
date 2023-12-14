@@ -53,7 +53,7 @@ def RectifyYaw(yaw,prev_yaw):
         yaw = yaw + 2*pi
     return yaw 
 
-def SaveData(cur_time, state, inputs):
+def SaveData(myfile, cur_time, state, inputs):
     save_vec = np.transpose(np.concatenate((np.array([[cur_time]]), state, inputs),axis=0))
     np.savetxt(myfile, save_vec, delimiter=',', fmt='%f')
     return   
