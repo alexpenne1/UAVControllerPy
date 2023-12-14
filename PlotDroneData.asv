@@ -1,11 +1,10 @@
 % PlotDroneData
-close all
 clear
 clc
 savetime = clock;
 Data = load('data.csv');
-fig_filename = 'ExperimentPlots/StationaryTest__';
-fig_filetime = ['__',num2str(savetime(1)),'_',num2str(savetime(2)),'_',num2str(savetime(3)),'_',num2str(savetime(4)),'_',num2str(savetime(5))];
+
+fig_filename = ['StationaryTest_',num2str(savetime(1)),'_',num2str(savetime(2)),'_',num2str(savetime(3)),'_',num2str(savetime(1))];
 
 % Separate data
 t      = Data(:,1);
@@ -33,7 +32,7 @@ Hz = ((t(end)-t(1))/length(t))^-1;
 t_rel = t-t(1);
 
 % Plot
-fig1 = figure(1);
+figure(1)
 title('Position')
 subplot(2,1,1)
 hold on
@@ -56,7 +55,7 @@ ylabel('velocity (m/s)')
 set(gca,'FontSize',18)
 hold off
 
-fig2 = figure(2);
+figure(2)
 title('Attitude')
 subplot(2,1,1)
 hold on
@@ -79,7 +78,7 @@ ylabel('angular velocity (rad/s)')
 set(gca,'FontSize',18)
 hold off
 
-fig3 = figure(3);
+figure(3)
 title('Controls')
 hold on
 plot(t_rel,u1)
@@ -91,11 +90,5 @@ xlabel('time (s)')
 ylabel('pulsewidth (micro s)')
 set(gca,'FontSize',18)
 hold off
-
-saveas(fig1,[fig_filename,'fig1',fig_filetime])
-saveas(fig2,[fig_filename,'fig2',fig_filetime])
-saveas(fig3,[fig_filename,'fig3',fig_filetime])
-
-
 
 
