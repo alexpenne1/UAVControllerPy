@@ -25,8 +25,7 @@ from ESC import connectMotorsPigpio
 from Vicon import connectVicon
 from Vicon import GetLinearStates
 # Controller.py files
-from Controller import EstimateRates
-from Controller import CalculateControlAction_LQR
+import Controller as ctrl
 #from Controller import CalculateControlAction_TestFeedback
 
 
@@ -94,17 +93,17 @@ with open('data.csv', 'w', newline='') as myfile:
             # Calculate latency
             dt = cur_time - prev_state[3]
             # Filter Position
-            x, y, z, fstatex, fstatey, fstatez = FilterViconPosition(x, y, z, dt, fstatex, fstatey, fstatez)
+            x, y, z, fstatex, fstatey, fstatez = ctrl.FilterViconPosition(x, y, z, dt, fstatex, fstatey, fstatez)
             # Estimate rates.
-            dxdt, dydt, dzdt = EstimateRates(x, y, z, dt, prev_state)
+            dxdt, dydt, dzdt = ctrl.EstimateRates(x, y, z, dt, prev_state)
             # Filter Rates
-            dxdt, dydt, dzdt, fstatedx, fstatedy, fstatedz = FilterViconRates(dxdt, dydt, dzdt, dt, fstatedx, fstatedy, fstatedz)
+            dxdt, dydt, dzdt, fstatedx, fstatedy, fstatedz = ctrl.FilterViconRates(dxdt, dydt, dzdt, dt, fstatedx, fstatedy, fstatedz)
             # Get attitude and rates from sensor.
             yaw, pitch, roll, dyaw, dpitch, droll, a_x, a_y, a_z = getStates(bno)
             # Make state vector.
             state =np.array([[x],[y],[z],[roll],[pitch],[yaw],[dxdt],[dydt],[dzdt],[droll],[dpitch],[dyaw]])
             # Get input from state.
-            inputs = CalculateControlAction_LQR(state,setpoint)
+            inputs = ctrl.CalculateControlAction_LQR(state,setpoint)
             # Change motor speeds.
             for i in range(0,4):
                 mypi.set_servo_pulsewidth(pins[i], inputs[i])
