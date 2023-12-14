@@ -30,7 +30,7 @@ with open('data.csv', 'w', newline='') as myfile:
     #csvwriter = csv.writer(myfile)
     try:
         while True:
-            state, cur_time = Sensors.getState(bno, mytracker, object_name, filter_states, state)
+            state, cur_time = Sensors.getState(bno, mytracker, object_name, filter_states, state, cur_time)
 
             # Get input from state.
             inputs = ctrl.CalculateControlAction_LQR(state,setpoint)
