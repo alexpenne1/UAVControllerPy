@@ -4,7 +4,7 @@ clear
 clc
 savetime = clock;
 Data = load('data.csv');
-fig_filename = 'ExperimentPlots/RollPitchYawTest__';
+fig_filename = 'ExperimentPlots/HandWithFilter/';
 fig_filetime = ['__',num2str(savetime(1)),'_',num2str(savetime(2)),'_',num2str(savetime(3)),'_',num2str(savetime(4)),'_',num2str(savetime(5))];
 
 % Separate data

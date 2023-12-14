@@ -27,9 +27,9 @@ def FilterViconRates(dxdt, dydt, dzdt, dt, fstatedx, fstatedy, fstatedz):
     K = 1  # filter gain
     dxf      = fstatedx                     # output current filter state
     fstatedx = (1-dt/T)*fstatedx + K*dt/T*dxdt # update filter state
-    dyf      = fstatedx                     # output current filter state
+    dyf      = fstatedy                     # output current filter state
     fstatedy = (1-dt/T)*fstatedy + K*dt/T*dydt # update filter state
-    dzf      = fstatedx                     # output current filter state
+    dzf      = fstatedz                     # output current filter state
     fstatedz = (1-dt/T)*fstatedz + K*dt/T*dzdt # update filter state
     return dxf, dyf, dzf, fstatedx, fstatedy, fstatedz
 
