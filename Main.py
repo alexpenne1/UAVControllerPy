@@ -75,6 +75,13 @@ setpoint = np.transpose(np.array([[init_x, init_y, init_z+target_height, init_ro
 init_time = time.time()
 # Make previous state vector.
 prev_state = [init_x, init_y, init_z, init_time]
+# Initialize Vicon filters
+xfilterstate = 0
+yfilterstate = 0
+zfilterstate = 0
+dxfilterstate = 0
+dyfilterstate = 0
+dzfilterstate = 0
 # Controller loop.
 with open('data.csv', 'w', newline='') as myfile:
     #csvwriter = csv.writer(myfile)
@@ -84,9 +91,14 @@ with open('data.csv', 'w', newline='') as myfile:
             x, y, z = GetLinearStates(mytracker, OBJECT_NAME)
             # Get current time.
             cur_time = time.time()
-            print(cur_time)
+            # Calculate latency
+            dt = cur_time - prev_state[3]
+            # Filter Position
+            x, y, z, fstatex, fstatey, fstatez = FilterViconPosition(x, y, z, dt, fstatex, fstatey, fstatez)
             # Estimate rates.
-            dxdt, dydt, dzdt = EstimateRates(x, y, z, cur_time, prev_state)
+            dxdt, dydt, dzdt = EstimateRates(x, y, z, dt, prev_state)
+            # Filter Rates
+            dxdt, dydt, dzdt, fstatedx, fstatedy, fstatedz = FilterViconRates(dxdt, dydt, dzdt, dt, fstatedx, fstatedy, fstatedz)
             # Get attitude and rates from sensor.
             yaw, pitch, roll, dyaw, dpitch, droll, a_x, a_y, a_z = getStates(bno)
             # Make state vector.
