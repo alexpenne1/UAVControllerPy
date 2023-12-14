@@ -21,11 +21,7 @@ import Controller as ctrl
 calibrate = False
 bno, mytracker, object_name = Sensors.init(calibrate)
 
-
-# Set pin numbers and connect the motors.
-pins = [24, 26, 17, 16] # using GPIO.BCM numbering
-mypi = ESC.connectMotorsPigpio(pins)
-print("Motors connected and callibrated!")
+pins, mypi = ESC.init()
 
 # START PROGRAM
 print("Starting program. To kill drone, kill the program using Ctrl+C.")
