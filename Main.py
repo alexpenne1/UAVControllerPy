@@ -88,7 +88,7 @@ with open('data.csv', 'w', newline='') as myfile:
             # Estimate rates.
             dxdt, dydt, dzdt = EstimateRates(x, y, z, cur_time, prev_state)
             # Get attitude and rates from sensor.
-            yaw, roll, pitch, dyaw, droll, dpitch, a_x, a_y, a_z = getStates(bno)
+            yaw, pitch, roll, dyaw, dpitch, droll, a_x, a_y, a_z = getStates(bno)
             # Make state vector.
             state =np.array([[x],[y],[z],[roll],[pitch],[yaw],[dxdt],[dydt],[dzdt],[droll],[dpitch],[dyaw]])
             # Get input from state.
