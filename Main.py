@@ -18,7 +18,8 @@ import Vicon
 import ESC
 import Controller as ctrl
 
-bno, mytracker, object_name = Sensors.init()
+calibrate = False
+bno, mytracker, object_name = Sensors.init(calibrate)
 
 
 # Set pin numbers and connect the motors.
