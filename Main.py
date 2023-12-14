@@ -77,7 +77,7 @@ init_time = time.time()
 prev_state = [init_x, init_y, init_z, init_time]
 # Controller loop.
 with open('data.csv', 'w', newline='') as myfile:
-    csvwriter = csv.writer(myfile)
+    #csvwriter = csv.writer(myfile)
     try:
         while True:
             # Get x, y, z from VICON.
@@ -97,7 +97,8 @@ with open('data.csv', 'w', newline='') as myfile:
             for i in range(0,4):
                 mypi.set_servo_pulsewidth(pins[i], inputs[i])
             # write time, states, and inputs to a csv file
-            np.transpose(np.concatenate((np.array([[cur_time]]), state, inputs),axis=0))
+            save_vec = np.transpose(np.concatenate((np.array([[cur_time]]), state, inputs),axis=0))
+            np.savetxt(myfile, save_vec, delimiter=',', fmt='%f')
             # Make current state the previous.                
             prev_state = [x, y, z, cur_time]
         
