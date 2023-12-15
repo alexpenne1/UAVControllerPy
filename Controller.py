@@ -38,8 +38,14 @@ def init(bno, mytracker, object_name):
     return setpoint, state, cur_time, K, ue, vmax, rho, sigma, xfilter, yfilter, zfilter, dxfilter, dyfilter, dzfilter, Tfilter, Kfilter, dTfilter, dKfilter
 
 def FilterSignal(signal_in,dt,filter_state,T,K):
+    print(f"Signal In       : {signal_in}/r")
+    print(f"Filter State In : {filter_state}/r")
     signal_out = filter_state
+    print(f"Signal Out      : {signal_out}/r")
     filter_state = (1-dt/T)*filter_state + K*dt/T*signal_in
+    print(f"Signal Out      : {signal_out}/r")
+    print(f"Filter State Out: {filter_state}/r")
+    time.sleep(1)
     return signal_out, filter_state
 
 def FilterViconPosition(x, y, z, dt, filter_states):
