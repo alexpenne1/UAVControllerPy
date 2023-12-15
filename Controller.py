@@ -47,7 +47,6 @@ def FilterViconPosition(x, y, z, dt, filter_states):
     return xf, yf, zf, filter_states
 '''
 def EstimateRates(x, y, z, dt, prev_state):
-    prev_state = np.ndarray.tolist(prev_state)
     dxdt = (x - prev_state[0]) / dt
     dydt = (y - prev_state[1]) / dt
     dzdt = (z - prev_state[2]) / dt
