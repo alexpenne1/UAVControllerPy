@@ -21,6 +21,7 @@ def init(calibrate):
     return bno, mytracker, object_name
 
 def getState(bno, mytracker, object_name, state, setpoint, cur_time, filter_states, filter_T, filter_K):
+    state = np.ndarray.tolist(state)
     rawx, rawy, rawz                                     = Vicon.GetLinearStates(mytracker, object_name)
     yaw, pitch, roll, dyaw, dpitch, droll, a_x, a_y, a_z = BNO.getStates(bno)
     yaw       = ctrl.RectifyYaw(yaw,state[5])
@@ -34,6 +35,15 @@ def getState(bno, mytracker, object_name, state, setpoint, cur_time, filter_stat
     dxdt, filter_states[3]    = ctrl.FilterSignal(rawdxdt, dt, filter_states[3], filter_T[3], filter_K[3])
     dydt, filter_states[4]    = ctrl.FilterSignal(rawdydt, dt, filter_states[4], filter_T[4], filter_K[4])
     dzdt, filter_states[5]    = ctrl.FilterSignal(rawdzdt, dt, filter_states[5], filter_T[5], filter_K[5])
+    '''
+    print(x)
+    print(y)
+    print(z)
+    print(roll)
+    print(pitch)
+    print(yaw)
+    print(dxdt)
+    '''
     state = np.array([[x],[y],[z],[roll],[pitch],[yaw],[dxdt],[dydt],[dzdt],[droll],[dpitch],[dyaw]])
     dx = state - setpoint
     return state, dx, cur_time, filter_states
