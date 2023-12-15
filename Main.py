@@ -23,7 +23,7 @@ bno, mytracker, object_name = Sensors.init(calibrate)
 
 pins, mypi = ESC.init()
 
-setpoint, state, filter_states, cur_time, K, ue, vmax, rho, sigma, xfilter, yfilter, zfilter, dxfilter, dyfilter, dzfilter, Tfilter, Kfilter, dTfilter, dKfilter = ctrl.init(bno, mytracker, object_name)
+setpoint, state, cur_time, K, ue, vmax, rho, sigma, xfilter, yfilter, zfilter, dxfilter, dyfilter, dzfilter, Tfilter, Kfilter, dTfilter, dKfilter = ctrl.init(bno, mytracker, object_name)
 
 # Controller loop.
 with open('data.csv', 'w', newline='') as myfile:
