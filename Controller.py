@@ -16,9 +16,9 @@ def init(bno, mytracker, object_name):
     target_height = .3
     setpoint = np.transpose(np.array([[x, y, z+target_height, roll, pitch, yaw, 0, 0, 0, 0, 0, 0]]))
     # Initialize Vicon filter states and parameters
-    filter_states = np.array([[0, 0, 0, 0, 0, 0]])
-    filter_T      = np.array([[.1, .1, .1, .25, .25, .25]])
-    filter_K      = np.array([[1, 1, 1, 1, 1, 1]])
+    filter_states = np.array([0, 0, 0, 0, 0, 0])
+    filter_T      = np.array([.1, .1, .1, .25, .25, .25])
+    filter_K      = np.array([1, 1, 1, 1, 1, 1])
     # Controller Parameters
     K = np.array([[-707.11, 0, 500, 0, -4183.61, -500, -1050.29, 0, 689.22, 0, -841.9, -766.82],
          [0, -707.11, 500, -4195.64, 0, 500, 0, -1051.12, 689.22, -846.73, 0, 766.82],
