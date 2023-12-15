@@ -66,10 +66,10 @@ def FilterViconRates(dxdt, dydt, dzdt, dt, filter_states):
     return dxf, dyf, dzf, filter_states
 '''
 def RectifyYaw(yaw,prev_yaw):
-    if yaw > prev_yaw + pi:
-        yaw = yaw - 2*pi
-    elif yaw < prev_yaw - pi:
-        yaw = yaw + 2*pi
+    if yaw > prev_yaw + np.pi:
+        yaw = yaw - 2*np.pi
+    elif yaw < prev_yaw - np.pi:
+        yaw = yaw + 2*np.pi
     return yaw 
 
 def SaveData(myfile, cur_time, state, inputs, dx):
