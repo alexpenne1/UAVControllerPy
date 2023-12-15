@@ -30,7 +30,7 @@ with open('data.csv', 'w', newline='') as myfile:
     #csvwriter = csv.writer(myfile)
     try:
         while True:
-            state, dx, cur_time = Sensors.getState(bno, mytracker, object_name, state, setpoint, cur_time, xfilter, yfilter, zfilter, dxfilter, dyfilter, dzfilter, Tfilter, Kfilter, dTfilter, dKfilter)
+            state, dx, cur_time, xfilter, yfilter, zfilter, dxfilter, dyfilter, dzfilter = Sensors.getState(bno, mytracker, object_name, state, setpoint, cur_time, xfilter, yfilter, zfilter, dxfilter, dyfilter, dzfilter, Tfilter, Kfilter, dTfilter, dKfilter)
             inputs          = ctrl.CalculateControlAction_LQR(dx, K, ue, vmax, rho, sigma)
             ESC.writeMotors(mypi,pins,inputs)
             ctrl.SaveData(myfile, cur_time, state, inputs, dx)
