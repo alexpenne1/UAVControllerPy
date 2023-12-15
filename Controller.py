@@ -7,6 +7,7 @@ import BNOSensor as BNO
 import Vicon
 
 def init(bno, mytracker, object_name):
+    # State initialization
     x, y, z = Vicon.GetLinearStates(mytracker, object_name)
     yaw, roll, pitch, dyaw, droll, dpitch, a_x, a_y, a_z = BNO.getStates(bno)
     cur_time = time.time() 
@@ -14,7 +15,16 @@ def init(bno, mytracker, object_name):
     target_height = .3 # setpoint 1ft above initial
     setpoint = np.transpose(np.array([[x, y, z+target_height, roll, pitch, yaw, 0, 0, 0, 0, 0, 0]]))
     filter_states = np.array([0, 0, 0, 0, 0, 0]) # Initialize Vicon filters
-    return setpoint, state, filter_states, cur_time
+    # Controller Parameters
+    K = np.array([[-707.11, 0, 500, 0, -4183.61, -500, -1050.29, 0, 689.22, 0, -841.9, -766.82],
+         [0, -707.11, 500, -4195.64, 0, 500, 0, -1051.12, 689.22, -846.73, 0, 766.82],
+         [707.11, 0, 500, 0, 4183.61, -500, 1050.29, 0, 689.22, 0, 841.9, -766.82],
+         [0, 707.11, 500, 4195.64, 0, 500, 0, 1051.12, 689.22, 846.73, 0, 766.82]])
+    ue = np.transpose(4414.91*np.array([[1,1,1,1]]))
+    vmax = 12.5
+    rho = 7.77e7
+    sigma = 7.19e-4 
+    return setpoint, state, filter_states, cur_time, K, ue, vmax, rho, sigma
 
 def FilterViconPosition(x, y, z, dt, filter_states):
     T = .1 # filter time constant
@@ -53,21 +63,13 @@ def RectifyYaw(yaw,prev_yaw):
         yaw = yaw + 2*pi
     return yaw 
 
-def SaveData(myfile, cur_time, state, inputs):
-    save_vec = np.transpose(np.concatenate((np.array([[cur_time]]), state, inputs),axis=0))
+def SaveData(myfile, cur_time, state, inputs, dx):
+    save_vec = np.transpose(np.concatenate((np.array([[cur_time]]), state, inputs, dx),axis=0))
     np.savetxt(myfile, save_vec, delimiter=',', fmt='%f')
     return   
 
-def CalculateControlAction_LQR(x,xe):
-    K = np.array([[-707.11, 0, 500, 0, -4183.61, -500, -1050.29, 0, 689.22, 0, -841.9, -766.82],
-         [0, -707.11, 500, -4195.64, 0, 500, 0, -1051.12, 689.22, -846.73, 0, 766.82],
-         [707.11, 0, 500, 0, 4183.61, -500, 1050.29, 0, 689.22, 0, 841.9, -766.82],
-         [0, 707.11, 500, 4195.64, 0, 500, 0, 1051.12, 689.22, 846.73, 0, 766.82]])
-    ue = np.transpose(4414.91*np.array([[1,1,1,1]]))
-    vmax = 12.5
-    rho = 7.77e7
-    sigma = 7.19e-4 
-    u = ue - np.matmul(K,(x - xe))
+def CalculateControlAction_LQR(dx, K, ue, vmax, rho, sigma):
+    u = ue - np.matmul(K,dx)
     PW = 800/(rho*vmax)*(np.power((u + rho*sigma),2) - np.power(rho*sigma,2)) + 1100
     print(type(PW))
     for index in range(4):

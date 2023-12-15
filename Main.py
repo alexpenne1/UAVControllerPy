@@ -23,17 +23,17 @@ bno, mytracker, object_name = Sensors.init(calibrate)
 
 pins, mypi = ESC.init()
 
-setpoint, state, filter_states, cur_time = ctrl.init(bno, mytracker, object_name)
+setpoint, state, filter_states, cur_time, K, ue, vmax, rho, sigma = ctrl.init(bno, mytracker, object_name)
 
 # Controller loop.
 with open('data.csv', 'w', newline='') as myfile:
     #csvwriter = csv.writer(myfile)
     try:
         while True:
-            state, cur_time = Sensors.getState(bno, mytracker, object_name, filter_states, state, cur_time)
-            inputs          = ctrl.CalculateControlAction_LQR(state, setpoint)
+            state, dx, cur_time = Sensors.getState(bno, mytracker, object_name, filter_states, state, setpoint, cur_time)
+            inputs          = ctrl.CalculateControlAction_LQR(dx, K, ue, vmax, rho, sigma)
             ESC.writeMotors(mypi,pins,inputs)
-            ctrl.SaveData(myfile, cur_time, state, inputs)
+            ctrl.SaveData(myfile, cur_time, state, inputs, dx)
         
     except KeyboardInterrupt:
         pass
