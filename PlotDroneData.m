@@ -40,7 +40,7 @@ deltadpitch = Data(:,28);
 deltadyaw   = Data(:,29);
 
 % Calculate average bandwidth
-Hz = ((t(end)-t(1))/N)^-1;
+Hz = ((t(end)-t(1))/N)^-1
 
 % Calculat Latency at each step
 dt = zeros(N-1,1);
