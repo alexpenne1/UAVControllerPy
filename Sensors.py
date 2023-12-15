@@ -20,16 +20,20 @@ def init(calibrate):
     object_name = "LoCicero_RPI_Drone"
     return bno, mytracker, object_name
 
-def getState(bno, mytracker, object_name, filter_states, state, setpoint, cur_time):
-    rawx, rawy, rawz                                              = Vicon.GetLinearStates(mytracker, object_name)
+def getState(bno, mytracker, object_name, state, setpoint, cur_time, xfilter, yfilter, zfilter, dxfilter, dyfilter, dzfilter, Tfilter, Kfilter, dTfilter, dKfilter):
+    rawx, rawy, rawz                                     = Vicon.GetLinearStates(mytracker, object_name)
     yaw, pitch, roll, dyaw, dpitch, droll, a_x, a_y, a_z = BNO.getStates(bno)
+    yaw       = ctrl.RectifyYaw(yaw,state[5])
     prev_time = cur_time
     cur_time  = time.time()
     dt        = cur_time - prev_time
-    x, y, z, filter_states          = ctrl.FilterViconPosition(rawx, rawy, rawz, dt, filter_states)
-    dxdt, dydt, dzdt                     = ctrl.EstimateRates(x, y, z, dt, state[0:3])
-    dxdt, dydt, dzdt, filter_states = ctrl.FilterViconRates(dxdt, dydt, dzdt, dt, filter_states)
-    yaw                                  = ctrl.RectifyYaw(yaw,state[5])
+    x, xfilter       = ctrl.FilterSignal(rawx, dt, xfilter, Tfilter, Kfilter)
+    y, yfilter       = ctrl.FilterSignal(rawy, dt, yfilter, Tfilter, Kfilter)
+    z, zfilter       = ctrl.FilterSignal(rawz, dt, zfilter, Tfilter, Kfilter)
+    rawdxdt, rawdydt, rawdzdt = ctrl.EstimateRates(x, y, z, dt, state[0:3])
+    dxdt, dxfilter = ctrl.FilterSignal(rawdxdt, dt, dxfilter, dTfilter, dKfilter)
+    dydt, dyfilter = ctrl.FilterSignal(rawdydt, dt, dyfilter, dTfilter, dKfilter)
+    dzdt, dzfilter = ctrl.FilterSignal(rawdzdt, dt, dzfilter, dTfilter, dKfilter)
     state = np.array([[x],[y],[z],[roll],[pitch],[yaw],[dxdt],[dydt],[dzdt],[droll],[dpitch],[dyaw]])
     dx = state - setpoint
     return state, dx, cur_time

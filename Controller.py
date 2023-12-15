@@ -7,14 +7,25 @@ import BNOSensor as BNO
 import Vicon
 
 def init(bno, mytracker, object_name):
-    # State initialization
+    # Initial localization
     x, y, z = Vicon.GetLinearStates(mytracker, object_name)
     yaw, roll, pitch, dyaw, droll, dpitch, a_x, a_y, a_z = BNO.getStates(bno)
     cur_time = time.time() 
     state = np.transpose(np.array([[x, y, z, roll, pitch, yaw, 0, 0, 0, droll, dpitch, dyaw]]))
-    target_height = .3 # setpoint 1ft above initial
+    # Create Setpoint
+    target_height = .3
     setpoint = np.transpose(np.array([[x, y, z+target_height, roll, pitch, yaw, 0, 0, 0, 0, 0, 0]]))
-    filter_states = np.array([0, 0, 0, 0, 0, 0]) # Initialize Vicon filters
+    # Initialize Vicon filter states and parameters
+    xfilter = 0
+    yfilter = 0
+    zfilter = 0
+    dxfilter = 0
+    dyfilter = 0
+    dzfilter = 0
+    Tfilter = .1
+    Kfilter = 1
+    dTfilter = .25
+    dKfilter = 1
     # Controller Parameters
     K = np.array([[-707.11, 0, 500, 0, -4183.61, -500, -1050.29, 0, 689.22, 0, -841.9, -766.82],
          [0, -707.11, 500, -4195.64, 0, 500, 0, -1051.12, 689.22, -846.73, 0, 766.82],
@@ -24,7 +35,12 @@ def init(bno, mytracker, object_name):
     vmax = 12.5
     rho = 7.77e7
     sigma = 7.19e-4 
-    return setpoint, state, filter_states, cur_time, K, ue, vmax, rho, sigma
+    return setpoint, state, cur_time, K, ue, vmax, rho, sigma, xfilter, yfilter, zfilter, dxfilter, dyfilter, dzfilter, Tfilter, Kfilter, dTfilter, dKfilter
+
+def FilterSignal(signal_in,dt,filter_state,T,K):
+    signal_out = filter_state
+    filter_state = (1-dt/T)*filter_state + K*dt/T*signal_in
+    return signal_out, filter_state
 
 def FilterViconPosition(x, y, z, dt, filter_states):
     T = .1 # filter time constant
