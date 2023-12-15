@@ -26,9 +26,9 @@ with open('data.csv', 'w', newline='') as myfile:
     #csvwriter = csv.writer(myfile)
     try:
         while True:
-            motor_number = input("Motor Number")
-            PW = input("Pulsewidth")
-            mypi.set_servo_pulsewidth(pins[motor_number-1], PW)
+            motor_number = input("Motor Number : ")
+            PW           = input("Pulsewidth   : ")
+            mypi.set_servo_pulsewidth(pins[float(motor_number)-1], float(PW))
         
     except KeyboardInterrupt:
         pass
