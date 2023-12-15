@@ -50,7 +50,7 @@ def EstimateRates(x, y, z, dt, prev_state):
     dxdt = (x - prev_state[0]) / dt
     dydt = (y - prev_state[1]) / dt
     dzdt = (z - prev_state[2]) / dt
-    return dxdt, dydt, dzdt
+    return dxdt.item(), dydt.item(), dzdt.item()
 '''
 def FilterViconRates(dxdt, dydt, dzdt, dt, filter_states):
     T = .25 # filter time constant
