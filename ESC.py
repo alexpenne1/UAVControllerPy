@@ -8,7 +8,7 @@ from Adafruit_BNO055 import BNO055
 
 def init():
     # Set pin numbers and connect the motors.
-    pins = [17, 24, 16, 26] # using GPIO.BCM numbering
+    pins = [17, 24, 16, 19] # using GPIO.BCM numbering
     mypi = connectMotorsPigpio(pins)
     print("Motors connected and callibrated!")
     return pins, mypi
