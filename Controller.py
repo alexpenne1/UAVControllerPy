@@ -71,7 +71,6 @@ def SaveData(myfile, cur_time, state, inputs, dx):
 def CalculateControlAction_LQR(dx, K, ue, vmax, rho, sigma):
     u = ue - np.matmul(K,dx)
     PW = 800/(rho*vmax)*(np.power((u + rho*sigma),2) - np.power(rho*sigma,2)) + 1100
-    print(type(PW))
     for index in range(4):
         if PW[index] > 1900:
             PW[index] = 1900

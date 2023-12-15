@@ -26,6 +26,18 @@ u1     = Data(:,14);
 u2     = Data(:,15);
 u3     = Data(:,16);
 u4     = Data(:,17);
+deltax      = Data(:,18);
+deltay      = Data(:,19);
+deltaz      = Data(:,20);
+deltaroll   = Data(:,21);
+deltapitch  = Data(:,22);
+deltayaw    = Data(:,23);
+deltadx     = Data(:,24);
+deltady     = Data(:,25);
+deltadz     = Data(:,26);
+deltadroll  = Data(:,27);
+deltadpitch = Data(:,28);
+deltadyaw   = Data(:,29);
 
 % Calculate average bandwidth
 Hz = ((t(end)-t(1))/N)^-1;
@@ -139,7 +151,7 @@ plot(t_rel,dz)
 plot(t_rel(2:end),dz_conditioned)
 hold off
 %}
-% Plot
+%% Plot
 fig_position = figure;
 title('Position')
 subplot(2,1,1)
@@ -198,6 +210,67 @@ xlabel('time (s)')
 ylabel('pulsewidth (micro s)')
 set(gca,'FontSize',18)
 hold off
+
+%% Plot Deltas
+fig_position = figure;
+title('Position From Reference')
+subplot(2,1,1)
+hold on
+plot(t_rel,deltax)
+plot(t_rel,deltay)
+plot(t_rel,deltaz)
+legend('\Delta x','\Delta y','\Delta z')
+xlabel('time (s)')
+ylabel('position (m)')
+set(gca,'FontSize',18)
+hold off
+subplot(2,1,2)
+hold on
+plot(t_rel,deltadx)
+plot(t_rel,deltady)
+plot(t_rel,deltadz)
+legend('\Delta dx','\Delta dy','\Delta dz')
+xlabel('time (s)')
+ylabel('velocity (m/s)')
+set(gca,'FontSize',18)
+hold off
+
+fig_attitude = figure;
+title('Attitude From Reference')
+subplot(2,1,1)
+hold on
+plot(t_rel,deltaroll)
+plot(t_rel,deltapitch)
+plot(t_rel,deltayaw)
+legend('\Delta roll','\Delta pitch','\Delta yaw')
+xlabel('time (s)')
+ylabel('attitude (rad)')
+set(gca,'FontSize',18)
+hold off
+subplot(2,1,2)
+hold on
+plot(t_rel,deltadroll)
+plot(t_rel,deltadpitch)
+plot(t_rel,deltadyaw)
+legend('deltadroll','deltadpitch','deltadyaw')
+xlabel('time (s)')
+ylabel('angular velocity (rad/s)')
+set(gca,'FontSize',18)
+hold off
+
+fig_controls = figure;
+title('Controls')
+hold on
+plot(t_rel,u1)
+plot(t_rel,u2)
+plot(t_rel,u3)
+plot(t_rel,u4)
+legend('u1','u2','u3','u4')
+xlabel('time (s)')
+ylabel('pulsewidth (micro s)')
+set(gca,'FontSize',18)
+hold off
+
 %{
 FFT_xaxis = Hz/N*(0:N-1);
 figure
