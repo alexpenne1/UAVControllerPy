@@ -70,9 +70,9 @@ def CalculateControlAction_LQR(x,xe):
     u = ue - np.matmul(K,(x - xe))
     PW = 800/(rho*vmax)*(np.power((u + rho*sigma),2) - np.power(rho*sigma,2)) + 1100
     print(type(PW))
-    for index in np.nditer(PW):
-        if PW[index] > 2500:
-            PW[index] = 2500
-        elif PW[index] < 500:
-            PW[index] = 500
+    for index in range(4):
+        if PW[index] > 1900:
+            PW[index] = 1900
+        elif PW[index] < 1100:
+            PW[index] = 1100
     return PW
