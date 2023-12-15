@@ -48,12 +48,12 @@ def EstimateRates(x, y, z, dt, prev_state):
 def FilterViconRates(dxdt, dydt, dzdt, dt, filter_states):
     T = .25 # filter time constant
     K = 1  # filter gain
-    dxf      = filter_states[0]                     # output current filter state
-    filter_states[0] = (1-dt/T)*filter_states[0] + K*dt/T*dxdt # update filter state
-    dyf      = filter_states[1]                     # output current filter state
-    filter_states[1] = (1-dt/T)*filter_states[1] + K*dt/T*dydt # update filter state
-    dzf      = filter_states[2]                     # output current filter state
-    filter_states[2] = (1-dt/T)*filter_states[2] + K*dt/T*dzdt # update filter state
+    dxf      = filter_states[3]                     # output current filter state
+    filter_states[3] = (1-dt/T)*filter_states[3] + K*dt/T*dxdt # update filter state
+    dyf      = filter_states[4]                     # output current filter state
+    filter_states[4] = (1-dt/T)*filter_states[4] + K*dt/T*dydt # update filter state
+    dzf      = filter_states[5]                     # output current filter state
+    filter_states[5] = (1-dt/T)*filter_states[5] + K*dt/T*dzdt # update filter state
     return dxf, dyf, dzf, filter_states
 
 def RectifyYaw(yaw,prev_yaw):

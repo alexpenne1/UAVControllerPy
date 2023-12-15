@@ -252,22 +252,9 @@ hold on
 plot(t_rel,deltadroll)
 plot(t_rel,deltadpitch)
 plot(t_rel,deltadyaw)
-legend('deltadroll','deltadpitch','deltadyaw')
+legend('\Delta droll','\Delta dpitch','\Delta dyaw')
 xlabel('time (s)')
 ylabel('angular velocity (rad/s)')
-set(gca,'FontSize',18)
-hold off
-
-fig_controls = figure;
-title('Controls')
-hold on
-plot(t_rel,u1)
-plot(t_rel,u2)
-plot(t_rel,u3)
-plot(t_rel,u4)
-legend('u1','u2','u3','u4')
-xlabel('time (s)')
-ylabel('pulsewidth (micro s)')
 set(gca,'FontSize',18)
 hold off
 
