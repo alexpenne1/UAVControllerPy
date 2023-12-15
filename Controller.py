@@ -16,7 +16,7 @@ def init(bno, mytracker, object_name):
     target_height = .3
     setpoint = np.transpose(np.array([[x, y, z+target_height, roll, pitch, yaw, 0, 0, 0, 0, 0, 0]]))
     # Initialize Vicon filter states and parameters
-    filter_states = [0, 0, 0, 0, 0, 0]
+    filter_states = [x, y, z, 0, 0, 0]
     filter_T      = [.1, .1, .1, .25, .25, .25]
     filter_K      = [1, 1, 1, 1, 1, 1]
     # Controller Parameters
@@ -34,35 +34,13 @@ def FilterSignal(signal_in,dt,filter_state,T,K):
     signal_out = filter_state
     filter_state = (1-dt/T)*filter_state + K*dt/T*signal_in
     return signal_out, filter_state
-'''
-def FilterViconPosition(x, y, z, dt, filter_states):
-    T = .1 # filter time constant
-    K = 1  # filter gain
-    xf      = filter_states[0]                     # output current filter state
-    filter_states[0] = (1-dt/T)*filter_states[0] + K*dt/T*x # update filter state
-    yf      = filter_states[1]                     # output current filter state
-    filter_states[1] = (1-dt/T)*filter_states[1] + K*dt/T*y # update filter state
-    zf      = filter_states[2]                     # output current filter state
-    filter_states[2] = (1-dt/T)*filter_states[2] + K*dt/T*z # update filter state
-    return xf, yf, zf, filter_states
-'''
+
 def EstimateRates(x, y, z, dt, prev_state):
     dxdt = (x - prev_state[0]) / dt
     dydt = (y - prev_state[1]) / dt
     dzdt = (z - prev_state[2]) / dt
     return dxdt.item(), dydt.item(), dzdt.item()
-'''
-def FilterViconRates(dxdt, dydt, dzdt, dt, filter_states):
-    T = .25 # filter time constant
-    K = 1  # filter gain
-    dxf      = filter_states[3]                     # output current filter state
-    filter_states[3] = (1-dt/T)*filter_states[3] + K*dt/T*dxdt # update filter state
-    dyf      = filter_states[4]                     # output current filter state
-    filter_states[4] = (1-dt/T)*filter_states[4] + K*dt/T*dydt # update filter state
-    dzf      = filter_states[5]                     # output current filter state
-    filter_states[5] = (1-dt/T)*filter_states[5] + K*dt/T*dzdt # update filter state
-    return dxf, dyf, dzf, filter_states
-'''
+
 def RectifyYaw(yaw,prev_yaw):
     if yaw > prev_yaw + np.pi:
         yaw = yaw - 2*np.pi
