@@ -26,9 +26,9 @@ def getState(bno, mytracker, object_name, filter_states, state, cur_time):
     prev_time = cur_time
     cur_time  = time.time()
     dt        = cur_time - prev_time
-    x, y, z, filter_states[0:3]          = ctrl.FilterViconPosition(x, y, z, dt, filter_states[0:3])
+    #x, y, z, filter_states[0:3]          = ctrl.FilterViconPosition(x, y, z, dt, filter_states[0:3])
     dxdt, dydt, dzdt                     = ctrl.EstimateRates(x, y, z, dt, state[0:3])
-    dxdt, dydt, dzdt, filter_states[3:6] = ctrl.FilterViconRates(dxdt, dydt, dzdt, dt, filter_states[3:6])
+    #dxdt, dydt, dzdt, filter_states[3:6] = ctrl.FilterViconRates(dxdt, dydt, dzdt, dt, filter_states[3:6])
     yaw                                  = ctrl.RectifyYaw(yaw,state[5])
     state = np.array([[x],[y],[z],[roll],[pitch],[yaw],[dxdt],[dydt],[dzdt],[droll],[dpitch],[dyaw]])
     return state, cur_time

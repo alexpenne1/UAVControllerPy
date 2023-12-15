@@ -43,7 +43,7 @@ t_ideal = linspace(t(1),t(end),N);
 
 % Convert to relative time
 t_rel = t-t(1);
-
+%{
 % Calculate low-pass filter for x
 T_pos_filter  = .1;
 K_pos_filter  = 1;
@@ -138,7 +138,7 @@ hold on
 plot(t_rel,dz)
 plot(t_rel(2:end),dz_conditioned)
 hold off
-
+%}
 % Plot
 fig_position = figure;
 title('Position')
@@ -198,7 +198,7 @@ xlabel('time (s)')
 ylabel('pulsewidth (micro s)')
 set(gca,'FontSize',18)
 hold off
-
+%{
 FFT_xaxis = Hz/N*(0:N-1);
 figure
 subplot(3,1,1)
@@ -215,7 +215,7 @@ subplot(3,1,2)
 loglog( FFT_xaxis , abs(fft(interp1(t,dy,t_ideal))) );
 subplot(3,1,3)
 loglog( FFT_xaxis , abs(fft(interp1(t,dz,t_ideal))) );
-
+%}
 % saveas(fig_attitude,[fig_filename,'position',fig_filetime])
 % saveas(fig_position,[fig_filename,'attitude',fig_filetime])
 % saveas(fig_controls,[fig_filename,'controls',fig_filetime])
