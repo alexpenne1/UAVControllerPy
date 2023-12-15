@@ -36,6 +36,7 @@ def getState(bno, mytracker, object_name, state, setpoint, cur_time, filter_stat
     dydt, filter_states[4]    = ctrl.FilterSignal(rawdydt, dt, filter_states[4], filter_T[4], filter_K[4])
     dzdt, filter_states[5]    = ctrl.FilterSignal(rawdzdt, dt, filter_states[5], filter_T[5], filter_K[5])
     print(filter_states)
+    time.sleep(1)
     state = np.array([[x],[y],[z],[roll],[pitch],[yaw],[dxdt],[dydt],[dzdt],[droll],[dpitch],[dyaw]])
     dx = state - setpoint
     return state, dx, cur_time, filter_states
