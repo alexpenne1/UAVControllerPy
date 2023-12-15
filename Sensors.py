@@ -20,20 +20,20 @@ def init(calibrate):
     object_name = "LoCicero_RPI_Drone"
     return bno, mytracker, object_name
 
-def getState(bno, mytracker, object_name, state, setpoint, cur_time, xfilter, yfilter, zfilter, dxfilter, dyfilter, dzfilter, Tfilter, Kfilter, dTfilter, dKfilter):
+def getState(bno, mytracker, object_name, state, setpoint, cur_time, filter_states, filter_T, filter_K):
     rawx, rawy, rawz                                     = Vicon.GetLinearStates(mytracker, object_name)
     yaw, pitch, roll, dyaw, dpitch, droll, a_x, a_y, a_z = BNO.getStates(bno)
     yaw       = ctrl.RectifyYaw(yaw,state[5])
     prev_time = cur_time
     cur_time  = time.time()
     dt        = cur_time - prev_time
-    x, xfilter       = ctrl.FilterSignal(rawx, dt, xfilter, Tfilter, Kfilter)
-    y, yfilter       = ctrl.FilterSignal(rawy, dt, yfilter, Tfilter, Kfilter)
-    z, zfilter       = ctrl.FilterSignal(rawz, dt, zfilter, Tfilter, Kfilter)
+    x, filter_states[0]       = ctrl.FilterSignal(rawx, dt, filter_states[0], filter_T[0], filter_K[0])
+    y, filter_states[1]       = ctrl.FilterSignal(rawy, dt, filter_states[1], filter_T[1], filter_K[1])
+    z, filter_states[2]       = ctrl.FilterSignal(rawz, dt, filter_states[2], filter_T[2], filter_K[2])
     rawdxdt, rawdydt, rawdzdt = ctrl.EstimateRates(x, y, z, dt, state[0:3])
-    dxdt, dxfilter = ctrl.FilterSignal(rawdxdt, dt, dxfilter, dTfilter, dKfilter)
-    dydt, dyfilter = ctrl.FilterSignal(rawdydt, dt, dyfilter, dTfilter, dKfilter)
-    dzdt, dzfilter = ctrl.FilterSignal(rawdzdt, dt, dzfilter, dTfilter, dKfilter)
+    dxdt, filter_states[3]    = ctrl.FilterSignal(rawdxdt, dt, filter_states[3], filter_T[3], filter_K[3])
+    dydt, filter_states[4]    = ctrl.FilterSignal(rawdydt, dt, filter_states[4], filter_T[4], filter_K[4])
+    dzdt, filter_states[5]    = ctrl.FilterSignal(rawdzdt, dt, filter_states[5], filter_T[5], filter_K[5])
     state = np.array([[x],[y],[z],[roll],[pitch],[yaw],[dxdt],[dydt],[dzdt],[droll],[dpitch],[dyaw]])
     dx = state - setpoint
-    return state, dx, cur_time, xfilter, yfilter, zfilter, dxfilter, dyfilter, dzfilter
+    return state, dx, cur_time, filter_states
