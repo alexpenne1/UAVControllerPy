@@ -19,7 +19,7 @@ import ESC
 import Controller as ctrl
 
 
-pins, mypi = ESC.init_alt()
+pins, mypi = ESC.init()
 
 # Controller loop.
 with open('data.csv', 'w', newline='') as myfile:
