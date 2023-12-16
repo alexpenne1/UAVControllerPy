@@ -26,7 +26,8 @@ def connectMotorsPigpio(pins):
     minval = 1100
     
     input("Check that battery is disconnected from the base, then press enter.")
-    for pin in pins:
+    for pin in pins[0:2]:
+        print(pin)
         mypi.set_servo_pulsewidth(pin, minval) # yellow ESCs can arm from minval
     print(pins[3])
     mypi.set_servo_pulsewidth(pins[3],maxval) # black ESCs need maxval before plugged in to arm correctly
