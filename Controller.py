@@ -5,6 +5,7 @@ import sys
 import time
 import BNOSensor as BNO
 import Vicon
+import csv
 
 def init(bno, mytracker, object_name):
     # Initial localization
@@ -22,10 +23,15 @@ def init(bno, mytracker, object_name):
     filter_T      = [.1, .1, .1, .25, .25, .25]
     filter_K      = [1, 1, 1, 1, 1, 1]
     # Controller Parameters
+    reader = csv.reader(open("ControlDesign/Controllers/LQRcontroller.csv", "rb"), delimiter=",")
+    K = list(reader)
+    K = numpy.array(K).astype("float")
+    '''
     K = np.array([[-707.11, 0, 500, 0, -4183.61, -500, -1050.29, 0, 689.22, 0, -841.9, -766.82],
          [0, -707.11, 500, -4195.64, 0, 500, 0, -1051.12, 689.22, -846.73, 0, 766.82],
          [707.11, 0, 500, 0, 4183.61, -500, 1050.29, 0, 689.22, 0, 841.9, -766.82],
          [0, 707.11, 500, 4195.64, 0, 500, 0, 1051.12, 689.22, 846.73, 0, 766.82]])
+    '''
     ue = np.transpose(4414.91*np.array([[1,1,1,1]]))
     vmax = 12.5
     rho = 7.77e7
