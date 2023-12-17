@@ -11,6 +11,7 @@ def init(bno, mytracker, object_name):
     x, y, z = Vicon.GetLinearStates(mytracker, object_name)
     yaw, roll, pitch, dyaw, droll, dpitch, a_x, a_y, a_z = BNO.getStates(bno)
     yaw_looper = 0
+    rawyaw = yaw
     cur_time = time.time() 
     state = np.transpose(np.array([[x, y, z, roll, pitch, yaw, 0, 0, 0, droll, dpitch, dyaw]]))
     # Create Setpoint
