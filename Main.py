@@ -31,7 +31,7 @@ with open('data.csv', 'w', newline='') as myfile:
             state, dx, cur_time, filter_states, yaw_looper, rawyaw = Sensors.getState(bno, mytracker, object_name, state, setpoint, cur_time, filter_states, filter_T, filter_K, yaw_looper,rawyaw)
             inputs          = ctrl.CalculateControlAction_LQR(dx, K, ue, vmax, rho, sigma)
             ESC.writeMotors(mypi,pins,inputs)
-            ctrl.SaveData(myfile, cur_time, state, inputs, dx)
+            ctrl.SaveData(myfile, cur_time, state, inputs, dx, yaw_looper, rawyaw)
         
     except KeyboardInterrupt:
         pass

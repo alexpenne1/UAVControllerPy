@@ -38,6 +38,8 @@ deltadz     = Data(:,26);
 deltadroll  = Data(:,27);
 deltadpitch = Data(:,28);
 deltadyaw   = Data(:,29);
+yaw_looper  = Data(:,30);
+rawyaw      = Data(:,31);
 
 % Calculate average bandwidth
 Hz = ((t(end)-t(1))/N)^-1
@@ -182,7 +184,9 @@ hold on
 plot(t_rel,roll)
 plot(t_rel,pitch)
 plot(t_rel,yaw)
-legend('roll','pitch','yaw')
+plot(t_rel,rawyaw)
+plot(t_rel,yaw_looper)
+legend('roll','pitch','yaw','rawyaw','yaw_looper')
 xlabel('time (s)')
 ylabel('attitude (rad)')
 set(gca,'FontSize',18)
