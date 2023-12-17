@@ -30,7 +30,7 @@ def init(bno, mytracker, object_name):
     vmax = 12.5
     rho = 7.77e7
     sigma = 7.19e-4 
-    return setpoint, state, cur_time, K, ue, vmax, rho, sigma, filter_states, filter_T, filter_K, yaw_looper
+    return setpoint, state, cur_time, K, ue, vmax, rho, sigma, filter_states, filter_T, filter_K, yaw_looper, rawyaw
 
 def FilterSignal(signal_in,dt,filter_state,T,K):
     signal_out = filter_state
