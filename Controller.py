@@ -49,7 +49,7 @@ def RectifyYaw(yaw,prev_yaw,yaw_looper):
     elif yaw < prev_yaw - np.pi:
         # Assume yaw has decreased past 2pi, so 2pi must be added
         yaw_looper = yaw_looper + 2*np.pi
-    print(f"Yaw: {yaw}, Looper: {yaw_looper}, Rectified: {yaw+yaw_looper}")
+    print(f"Prev_Yaw: {prev_yaw}, Yaw: {yaw}, Looper: {yaw_looper}, Rectified: {yaw+yaw_looper}")
     yaw = yaw + yaw_looper
     return yaw, yaw_looper 
 
