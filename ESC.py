@@ -26,9 +26,8 @@ def connectMotorsPigpio(pins):
     minval = 1100
     
     input("Check that battery is disconnected from the base, then press enter.")
-    for pin in pins[0:2]:
+    for pin in pins:
         mypi.set_servo_pulsewidth(pin, minval) # yellow ESCs can arm from minval
-    mypi.set_servo_pulsewidth(pins[3],maxval) # black ESCs need maxval before plugged in to arm correctly
         
     input("Connect the battery. Press enter when done.")
     for pin in pins:
@@ -36,7 +35,7 @@ def connectMotorsPigpio(pins):
     print("4 beeps indicates drone is armed. Otherwise, needs callibration.")
     print("End arming sequence.\n\n")
     print("Starting program. To kill drone, kill the program using Ctrl+C.")
-    time.sleep(1)
+    time.sleep(3)
     return mypi
 
 def writeMotors(mypi,pins,inputs):
