@@ -18,7 +18,7 @@ import Vicon
 import ESC
 import Controller as ctrl
 
-calibrate = True
+calibrate = False
 bno, mytracker, object_name = Sensors.init(calibrate)
 
 pins, mypi = ESC.init()
