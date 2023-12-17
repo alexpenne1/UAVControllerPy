@@ -8,6 +8,8 @@ import Vicon
 
 def init(bno, mytracker, object_name):
     # Initial localization
+    print("Initializing Sensors...")
+    time.sleep(3)
     x, y, z = Vicon.GetLinearStates(mytracker, object_name)
     yaw, roll, pitch, dyaw, droll, dpitch, a_x, a_y, a_z = BNO.getStates(bno)
     yaw_looper = 0
