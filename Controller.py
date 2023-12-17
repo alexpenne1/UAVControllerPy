@@ -23,7 +23,7 @@ def init(bno, mytracker, object_name):
     filter_T      = [.1, .1, .1, .25, .25, .25]
     filter_K      = [1, 1, 1, 1, 1, 1]
     # Controller Parameters
-    reader = csv.reader(open("ControlDesign/Controllers/LQRcontroller.csv", "rb"), delimiter=",")
+    reader = csv.reader(open("ControlDesign/Controllers/LQRcontroller.csv", "r"), delimiter=",")
     K = list(reader)
     K = numpy.array(K).astype("float")
     '''
