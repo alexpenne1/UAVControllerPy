@@ -10,6 +10,7 @@ def init(bno, mytracker, object_name):
     # Initial localization
     x, y, z = Vicon.GetLinearStates(mytracker, object_name)
     yaw, roll, pitch, dyaw, droll, dpitch, a_x, a_y, a_z = BNO.getStates(bno)
+    yaw_looper = 0
     cur_time = time.time() 
     state = np.transpose(np.array([[x, y, z, roll, pitch, yaw, 0, 0, 0, droll, dpitch, dyaw]]))
     # Create Setpoint
@@ -28,7 +29,7 @@ def init(bno, mytracker, object_name):
     vmax = 12.5
     rho = 7.77e7
     sigma = 7.19e-4 
-    return setpoint, state, cur_time, K, ue, vmax, rho, sigma, filter_states, filter_T, filter_K
+    return setpoint, state, cur_time, K, ue, vmax, rho, sigma, filter_states, filter_T, filter_K, yaw_looper
 
 def FilterSignal(signal_in,dt,filter_state,T,K):
     signal_out = filter_state
@@ -41,12 +42,15 @@ def EstimateRates(x, y, z, dt, prev_state):
     dzdt = (z - prev_state[2]) / dt
     return dxdt.item(), dydt.item(), dzdt.item()
 
-def RectifyYaw(yaw,prev_yaw):
+def RectifyYaw(yaw,prev_yaw,yaw_looper):
     if yaw > prev_yaw + np.pi:
-        yaw = yaw - 2*np.pi
+        # Assume yaw has increased past 2pi, so 2pi must be subtracted
+        yaw_looper = yaw_looper - 2*np.pi
     elif yaw < prev_yaw - np.pi:
-        yaw = yaw + 2*np.pi
-    return yaw 
+        # Assume yaw has decreased past 2pi, so 2pi must be added
+        yaw_looper = yaw_looper + 2*np.pi
+    yaw = yaw + yaw_looper
+    return yaw, yaw_looper 
 
 def SaveData(myfile, cur_time, state, inputs, dx):
     save_vec = np.transpose(np.concatenate((np.array([[cur_time]]), state, inputs, dx),axis=0))

@@ -22,7 +22,7 @@ def init(calibrate):
 
 def getState(bno, mytracker, object_name, state, setpoint, cur_time, filter_states, filter_T, filter_K):
     rawx, rawy, rawz                                     = Vicon.GetLinearStates(mytracker, object_name)
-    yaw, pitch, roll, dyaw, dpitch, droll, a_x, a_y, a_z = BNO.getStates(bno)
+    yaw, pitch, roll, droll, dpitch, dyaw, a_x, a_y, a_z = BNO.getStates(bno)
     yaw       = ctrl.RectifyYaw(yaw,state[5])
     prev_time = cur_time
     cur_time  = time.time()
