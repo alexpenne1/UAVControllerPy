@@ -24,7 +24,7 @@ u_num = sqrt(p.m*p.g/p.k)/4;            % Nominal force to offset gravity
 ue = 2*[u_num u_num u_num u_num];       % Control equilibrium
 [A,B] = linearize(xe, ue, p);           % Generate Linearized System Model
 Q = diag([1,1,1,10,10,10,1,1,1,10,10,10]);    % State Weight
-R = .00001.*eye(4);                   % Control Weight
+R = .0001.*eye(4);                   % Control Weight
 K = lqr(A,B,Q,R);                       % Feedback Matrix
 K(abs(K)<.0001) = 0;
 writematrix(K,'Controllers/LQRcontroller.csv')
