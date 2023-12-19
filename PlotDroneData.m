@@ -4,7 +4,7 @@ clear
 clc
 savetime = clock;
 Data = load('data.csv');
-fig_filename = 'ExperimentPlots/HandWithFilter/';
+fig_filename = 'ExperimentPlots/FlightTest1/';
 fig_filetime = ['__',num2str(savetime(1)),'_',num2str(savetime(2)),'_',num2str(savetime(3)),'_',num2str(savetime(4)),'_',num2str(savetime(5))];
 
 % Separate data
@@ -186,7 +186,7 @@ plot(t_rel,pitch)
 plot(t_rel,yaw)
 plot(t_rel,rawyaw)
 plot(t_rel,yaw_looper)
-legend('roll','pitch','yaw','rawyaw','yaw_looper')
+legend('roll','pitch','yaw','rawyaw','yaw_{looper}')
 xlabel('time (s)')
 ylabel('attitude (rad)')
 set(gca,'FontSize',18)
@@ -216,7 +216,7 @@ set(gca,'FontSize',18)
 hold off
 
 %% Plot Deltas
-fig_position = figure;
+fig_relposition = figure;
 title('Position From Reference')
 subplot(2,1,1)
 hold on
@@ -239,7 +239,7 @@ ylabel('velocity (m/s)')
 set(gca,'FontSize',18)
 hold off
 
-fig_attitude = figure;
+fig_relattitude = figure;
 title('Attitude From Reference')
 subplot(2,1,1)
 hold on
@@ -262,28 +262,12 @@ ylabel('angular velocity (rad/s)')
 set(gca,'FontSize',18)
 hold off
 
-%{
-FFT_xaxis = Hz/N*(0:N-1);
-figure
-subplot(3,1,1)
-loglog( FFT_xaxis , abs(fft(interp1(t,x,t_ideal))) );
-subplot(3,1,2)
-loglog( FFT_xaxis , abs(fft(interp1(t,y,t_ideal))) );
-subplot(3,1,3)
-loglog( FFT_xaxis , abs(fft(interp1(t,z,t_ideal))) );
-
-figure
-subplot(3,1,1)
-loglog( FFT_xaxis , abs(fft(interp1(t,dx,t_ideal))) );
-subplot(3,1,2)
-loglog( FFT_xaxis , abs(fft(interp1(t,dy,t_ideal))) );
-subplot(3,1,3)
-loglog( FFT_xaxis , abs(fft(interp1(t,dz,t_ideal))) );
-%}
-% saveas(fig_attitude,[fig_filename,'position',fig_filetime])
-% saveas(fig_position,[fig_filename,'attitude',fig_filetime])
-% saveas(fig_controls,[fig_filename,'controls',fig_filetime])
-% saveas(fig_latency, [fig_filename,'latency' ,fig_filetime])
+saveas(fig_attitude,[fig_filename,'position',fig_filetime])
+saveas(fig_position,[fig_filename,'attitude',fig_filetime])
+saveas(fig_relattitude,[fig_filename,'relposition',fig_filetime])
+saveas(fig_relposition,[fig_filename,'relattitude',fig_filetime])
+saveas(fig_controls,[fig_filename,'controls',fig_filetime])
+saveas(fig_latency, [fig_filename,'latency' ,fig_filetime])
 
 
 
