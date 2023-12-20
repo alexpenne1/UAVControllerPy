@@ -34,9 +34,9 @@ def init(bno, mytracker, object_name):
     '''
     ue = np.transpose(4414.91*np.array([[1,1,1,1]]))
     vmax = 12.5
-    rho = 7.77e7
-    sigma = 7.19e-4 
-    return setpoint, state, cur_time, K, ue, vmax, rho, sigma, filter_states, filter_T, filter_K, yaw_looper, rawyaw
+    RbkT = 1.29e-7
+    ke = 0.000656 
+    return setpoint, state, cur_time, K, ue, vmax, RbkT, ke, filter_states, filter_T, filter_K, yaw_looper, rawyaw
 
 def FilterSignal(signal_in,dt,filter_state,T,K):
     signal_out = filter_state
@@ -64,9 +64,9 @@ def SaveData(myfile, cur_time, state, inputs, dx, yaw_looper, rawyaw):
     np.savetxt(myfile, save_vec, delimiter=',', fmt='%f')
     return   
 
-def CalculateControlAction_LQR(dx, K, ue, vmax, rho, sigma):
+def CalculateControlAction_LQR(dx, K, ue, vmax, RbkT, ke):
     u = ue - np.matmul(K,dx)
-    PW = 800/(rho*vmax)*(np.power((u + rho*sigma),2) - np.power(rho*sigma,2)) + 1100
+    PW = 800/vmax*(RbkT*np.power(u,2) + ke*u) + 1100
     for index in range(4):
         if PW[index] > 1900:
             PW[index] = 1900
