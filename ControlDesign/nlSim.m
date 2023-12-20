@@ -8,7 +8,8 @@ for i = 1:length(t)
     u(:,i)    = ue'-K*(x(i,:)'-xe');
     u(u>p.max_omega) = p.max_omega;
     u(u<p.min_omega) = p.min_omega;
-    pulsewidth(:,i) = 800/(p.rho*p.vmax)*((u(:,i)+p.rho*p.pi).^2 - (p.rho*p.pi)^2) + 1100;
+    pulsewidth(:,i) = 800/p.vmax.*((p.RbkT*u(:,i).^2 + p.ke*u(:,i))) + 1100;
+
 end
 
 end

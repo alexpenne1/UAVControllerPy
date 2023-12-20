@@ -10,16 +10,15 @@ p.Iyy = 0.012568;   % moment of inertia around y axis, kg*m^2
 p.Izz = 0.021489;   % moment of inertia around z axis, kg*m^2
 p.k   = 1.29e-7;    % lift constant, N/rpm
 p.b   = 8.21e-9;    % drag constant, N/rpm
-p.k_e = 0.000656;   % back EMF, V/rpm
-p.k_T = 0.0108;    % torque constant, Nm/A
-p.R   = .17;        % motor resistance, Ohms
-p.rho = p.k_T/(p.b*p.R);
-p.pi  = p.k_e/2;    
+p.ke = 0.000656;   % back EMF, V/rpm
+p.kT = 0.0108;     % torque constant, Nm/A
+p.R    = .17;       % motor resistance, Ohms
+p.RbkT = p.R*p.b/p.kT;   
 p.vmax = 12.3;      % battery voltage
 p.min_PW  = 1100;
 p.max_PW  = 1900;
 p.min_omega = 0;
-p.max_omega = sqrt(p.rho*p.vmax/800*(p.max_PW-1100) + (p.rho*p.pi)^2) - p.rho*p.pi;
+p.max_omega = max(roots([p.R*p.b/p.kT, p.ke, -p.vmax]));
 
 %% LQR Control Design
 xe = [0 0 .3 0 0 0 0 0 0 0 0 0];         % State equilibrium
