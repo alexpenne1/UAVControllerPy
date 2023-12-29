@@ -6,8 +6,9 @@ import time
 import BNOSensor as BNO
 import Vicon
 import csv
+import sys
 
-def init(bno, mytracker, object_name):
+def init(bno, mytracker, object_name, CTRLR, error):
     # Initial localization
     x, y, z = Vicon.GetLinearStates(mytracker, object_name)
     yaw, pitch, roll, dyaw, droll, dpitch, a_x, a_y, a_z = BNO.getStates(bno)
@@ -20,23 +21,44 @@ def init(bno, mytracker, object_name):
     setpoint = np.transpose(np.array([[x, y, z+target_height, roll, pitch, yaw, 0, 0, 0, 0, 0, 0]]))
     # Initialize Vicon filter states and parameters
     filter_states = [x, y, z, 0, 0, 0]
-    filter_T      = [.1, .1, .1, .25, .25, .25]
-    filter_K      = [1, 1, 1, 1, 1, 1]
+    filterparams = {"Tx" : .1, "Ty" : .1, "Tz" : .1, "Tdx" : .25, "Tdy" : .25, "Tdz" : .25, 
+                    "Kx" : 1,  "Ky" : 1,  "Kz" : 1,  "Kdx" : 1,   "Kdy" : 1,   "Kdz" : 1}
+    # PWM motor parameters
+    PWMparams = {"vmax": 12.5, "RbkT": 1.29e-7 , "ke": 0.000656} 
     # Controller Parameters
-    reader = csv.reader(open("ControlDesign/Controllers/LQRcontroller.csv", "r"), delimiter=",")
-    K = list(reader)
-    K = np.array(K).astype("float")
-    '''
-    K = np.array([[-707.11, 0, 500, 0, -4183.61, -500, -1050.29, 0, 689.22, 0, -841.9, -766.82],
-         [0, -707.11, 500, -4195.64, 0, 500, 0, -1051.12, 689.22, -846.73, 0, 766.82],
-         [707.11, 0, 500, 0, 4183.61, -500, 1050.29, 0, 689.22, 0, 841.9, -766.82],
-         [0, 707.11, 500, 4195.64, 0, 500, 0, 1051.12, 689.22, 846.73, 0, 766.82]])
-    '''
-    ue = np.transpose(4414.91*np.array([[1,1,1,1]]))
-    vmax = 12.5
-    RbkT = 1.29e-7
-    ke = 0.000656 
-    return setpoint, state, cur_time, K, ue, vmax, RbkT, ke, filter_states, filter_T, filter_K, yaw_looper, rawyaw
+    match CTRLR:
+        case 'LQR':
+            reader = csv.reader(open("ControlDesign/Controllers/LQRcontroller.csv", "r"), delimiter=",")
+            K = list(reader)
+            K = np.array(K).astype("float")
+            feedbackparams = {
+                "K": K,
+                "ue": np.transpose(4414.91*np.array([[1,1,1,1]]))
+            }
+        case 'PD':
+            feedbackparams = {
+                "K_x"     : 1,
+                "K_y"     : 1,
+                "K_z"     : 1,
+                "K_dx"    : 1,
+                "K_dy"    : 1,
+                "K_dz"    : 1,
+                "K_roll"  : 1,
+                "K_pitch" : 1,
+                "K_yaw"   : 1,
+                "K_droll" : 1,
+                "K_dpitch": 1,
+                "K_dyaw"  : 1, 
+                "K_motor" : 1,
+                "mg"      : 1,
+                "Gamma"   : 1,
+                "sinYawSet" : np.sin(setpoint[5])/9.81,
+                "cosYawSet" : np.cos(setpoint[5])/9.81
+            }
+        case _:
+            print("Ill-defined controller. Terminating program.")
+            error = True
+    return setpoint, state, cur_time, feedbackparams, PWMparams, filterparams, filter_states, yaw_looper, rawyaw, error
 
 def FilterSignal(signal_in,dt,filter_state,T,K):
     signal_out = filter_state
@@ -62,14 +84,18 @@ def RectifyYaw(yaw,prev_yaw,yaw_looper):
 def SaveData(myfile, cur_time, state, inputs, dx, yaw_looper, rawyaw):
     save_vec = np.transpose(np.concatenate((np.array([[cur_time]]), state, inputs, dx, np.array([[yaw_looper]]), np.array([[rawyaw]])),axis=0))
     np.savetxt(myfile, save_vec, delimiter=',', fmt='%f')
-    return   
+    return 
 
-def CalculateControlAction_LQR(dx, K, ue, vmax, RbkT, ke):
-    u = ue - np.matmul(K,dx)
-    PW = 800/vmax*(RbkT*np.power(u,2) + ke*u) + 1100
+def RectifyControl(PW):
     for index in range(4):
         if PW[index] > 1900:
             PW[index] = 1900
         elif PW[index] < 1100:
             PW[index] = 1100
+    return PW  
+
+def Speed2PW(w,p):
+    PW = 800/p["vmax"]*(p["RbkT"]*np.power(w,2) + p["ke"]*w) + 1100
     return PW
+
+

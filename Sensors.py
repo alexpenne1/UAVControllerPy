@@ -20,20 +20,20 @@ def init(calibrate):
     object_name = "LoCicero_RPI_Drone"
     return bno, mytracker, object_name
 
-def getState(bno, mytracker, object_name, state, setpoint, cur_time, filter_states, filter_T, filter_K, yaw_looper, rawyaw_prev):
+def getState(bno, mytracker, object_name, state, setpoint, cur_time, filter_states, Fp, yaw_looper, rawyaw_prev):
     rawx, rawy, rawz                                     = Vicon.GetLinearStates(mytracker, object_name)
     rawyaw, pitch, roll, droll, dpitch, dyaw, a_x, a_y, a_z = BNO.getStates(bno)
     yaw, yaw_looper       = ctrl.RectifyYaw(rawyaw,rawyaw_prev,yaw_looper)
     prev_time = cur_time
     cur_time  = time.time()
     dt        = cur_time - prev_time
-    x, filter_states[0]       = ctrl.FilterSignal(rawx, dt, filter_states[0], filter_T[0], filter_K[0])
-    y, filter_states[1]       = ctrl.FilterSignal(rawy, dt, filter_states[1], filter_T[1], filter_K[1])
-    z, filter_states[2]       = ctrl.FilterSignal(rawz, dt, filter_states[2], filter_T[2], filter_K[2])
+    x, filter_states[0]       = ctrl.FilterSignal(rawx, dt, filter_states[0], Fp["Tx"], Fp["Kx"])
+    y, filter_states[1]       = ctrl.FilterSignal(rawy, dt, filter_states[1], Fp["Ty"], Fp["Ky"])
+    z, filter_states[2]       = ctrl.FilterSignal(rawz, dt, filter_states[2], Fp["Tz"], Fp["Kz"])
     rawdxdt, rawdydt, rawdzdt = ctrl.EstimateRates(x, y, z, dt, state[0:3])
-    dxdt, filter_states[3]    = ctrl.FilterSignal(rawdxdt, dt, filter_states[3], filter_T[3], filter_K[3])
-    dydt, filter_states[4]    = ctrl.FilterSignal(rawdydt, dt, filter_states[4], filter_T[4], filter_K[4])
-    dzdt, filter_states[5]    = ctrl.FilterSignal(rawdzdt, dt, filter_states[5], filter_T[5], filter_K[5])
+    dxdt, filter_states[3]    = ctrl.FilterSignal(rawdxdt, dt, filter_states[3], Fp["Tdx"], Fp["Kdx"])
+    dydt, filter_states[4]    = ctrl.FilterSignal(rawdydt, dt, filter_states[4], Fp["Tdy"], Fp["Kdy"])
+    dzdt, filter_states[5]    = ctrl.FilterSignal(rawdzdt, dt, filter_states[5], Fp["Tdz"], Fp["Kdz"])
     state = np.array([[x],[y],[z],[roll],[pitch],[yaw],[dxdt],[dydt],[dzdt],[droll],[dpitch],[dyaw]])
     dx = state - setpoint
     return state, dx, cur_time, filter_states, yaw_looper, rawyaw

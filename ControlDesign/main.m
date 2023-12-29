@@ -33,7 +33,7 @@ writematrix(K,'Controllers/LQRcontroller.csv')
 
 %% Simulations
 tspan = [0 5];                                            % time range
-x0    = xe + [0 0 -.3 pi/12 -pi/12 0 0 0 0 0 0 0];                % initial conditions
+x0    = xe + [0 0 0 0 0 pi/2 0 0 0 0 0 0];                % initial conditions
 [t_lin, x_lin, u_lin, duty_lin] = LinearSim(tspan, xe', x0', A,B,K,p); % linear simulation
 [t_nl, x_nl, u_nl, duty_nl]     = nlSim(x0',tspan,K,ue,xe,p);        % nonlinear simulation
 
