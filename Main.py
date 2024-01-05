@@ -20,16 +20,15 @@ import Controller as ctrl
 
 error = False
 calibrate = False
-CTRLR = 'PD'
+CTRLR = "PD"
 
-match CTRLR:
-    case 'LQR':
-        from Feedback import LQR as CalculateControlAction
-    case 'PD':
-        from Feedback import PD as CalculateControlAction
-    case _:
-        print("Ill-defined controller. Terminating program")
-        sys.exit
+if CTRLR == "LQR":
+    from Feedback import LQR as CalculateControlAction
+elif CTRLR ==  "PD":
+    from Feedback import PD as CalculateControlAction
+else:
+    print("Ill-defined controller. Terminating program")
+    sys.exit
 
 bno, mytracker, object_name = Sensors.init(calibrate)
 

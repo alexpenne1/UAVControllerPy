@@ -16,9 +16,9 @@ def PD(dx, FBp, PWMp):
     Delta_roll  = dx[3] - roll_com  # this should work only if roll setpoint is 0 in initialization (or rather, roll bias)
     Delta_pitch = dx[4] - pitch_com # this should work only if pitch setpoint is 0 in initialization (or rather, pitch bias)
     lift = FBp["mg"] - FBp["K_z"]*dx[2] - FBp["K_dz"]*dx[8]
-    tau1 = FBp["K_roll"]*Delta_roll + FBp["k_droll"]*dx[9]
-    tau2 = FBp["K_pitch"]*Delta_pitch + FBp["k_dpitch"]*dx[10]
-    tau3 = FBp["K_yaw"]*dx[5] + FBp["k_dyaw"]*dx[11]
+    tau1 = FBp["K_roll"]*Delta_roll + FBp["K_droll"]*dx[9]
+    tau2 = FBp["K_pitch"]*Delta_pitch + FBp["K_dpitch"]*dx[10]
+    tau3 = FBp["K_yaw"]*dx[5] + FBp["K_dyaw"]*dx[11]
     Tau = np.array([[lift],[tau1],[tau2],[tau3]])
     w = np.sqrt(FBp["Gamma"]*Tau)
     PW = ctrl.Speed2PW(w,PWMp)
