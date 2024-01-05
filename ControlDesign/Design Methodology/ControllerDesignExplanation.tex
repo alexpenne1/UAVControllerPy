@@ -1,0 +1,246 @@
+\documentclass[10pt]{article}
+\input{Packages} 										% all of the packages used in the document
+\input{CustomCommands} 							% your macros
+\usepackage{float}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{array}
+\usepackage{nicefrac}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+
+\usepackage{acronym}% heard about a great LaTeX package and thought I'd share. It's the acronym package. It lets you define a macro for each acronym, e.g.\acrodef{uav}[{\sc uav}]{unmanned aerial vehicle}. Then, when you want to use the acronym, you type \ac{uav} for singular and \acp{uav} for plural. The package will figure out when you first use the acronym and introduce it properly.
+\usepackage{verbatim}
+
+% Theorem environments
+\newtheorem{define}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{problem}{Problem}
+\newtheorem{assumption}{Assumption}
+\newtheorem{case}{Case}
+\newtheorem{pf}{Proof}
+\newtheorem{preliminaries}{Preliminaries}
+\newtheorem{cor}{Corollary}
+\newtheorem{property}{Property}
+
+% Macro for \Autoref (takes in multiple references)
+\makeatletter
+\newcommand\Autoref[1]{\@first@ref#1,@}
+\def\@throw@dot#1.#2@{#1}% discard everything after the dot
+\def\@set@refname#1{%    % set \@refname to autoefname+s using \getrefbykeydefault
+	\edef\@tmp{\getrefbykeydefault{#1}{anchor}{}}%
+	\xdef\@tmp{\expandafter\@throw@dot\@tmp.@}%
+	\ltx@IfUndefined{\@tmp autorefnameplural}%
+	{\def\@refname{\@nameuse{\@tmp autorefname}s}}%
+	{\def\@refname{\@nameuse{\@tmp autorefnameplural}}}%
+}
+\def\@first@ref#1,#2{%
+	\ifx#2@\autoref{#1}\let\@nextref\@gobble% only one ref, revert to normal \autoref
+	\else%
+	\@set@refname{#1}%  set \@refname to autoref name
+	\@refname~\ref{#1}% add autoefname and first reference
+	\let\@nextref\@next@ref% push processing to \@next@ref
+	\fi%
+	\@nextref#2%
+}
+\def\@next@ref#1,#2{%
+	\ifx#2@ and~\ref{#1}\let\@nextref\@gobble% at end: print and+\ref and stop
+	\else, \ref{#1}% print  ,+\ref and continue
+	\fi%
+	\@nextref#2%
+}
+\newcommand{\card}{\mbox{card}} % cardinality
+\newcommand{\bcard}{\overline{\mbox{card}}} % block cardinality
+\newcommand{\block}{\mbox{block}} % block partition operator
+\newcommand{\Bfrak}{\mathfrak{B}} % block
+\newcommand{\Gfrak}{\mathfrak{G}} % graph
+\newcommand{\Scal}{\mathcal{S}} % structure
+\newcommand{\Chat}{\widehat{\mathbf{C}}} % Chat
+\newcommand{\Ahat}{\widehat{\mathbf{A}}} % Ahat
+\newcommand{\Bhat}{\widehat{\mathbf{B}}} % Bhat
+\newcommand{\Dhat}{\widehat{\mathbf{D}}} % Dhat
+\newcommand{\GfrakC}{\Gfrak^c} % graph for Chat
+\newcommand{\BfrakC}{\Bfrak^c} % block for Chat
+\newcommand{\Bfrakx}{\Bfrak^A} % block for A
+\newcommand{\Bfraky}{\Bfrak^B} % block for B
+\newcommand{\Bfrakz}{\Bfrak^C} % block for C
+\newcommand{\bb}[1]{\mathbb{#1}} % double bar R
+\newcommand{\I}{\mathbf{I}} % bold I
+\newcommand{\mbf}[1]{\mathbf{#1}} % bold
+\newcommand{\bmat}[1]{\begin{bmatrix} #1 \end{bmatrix}} % bracketed matrix
+\newcommand{\Hcal}{\mathcal{H}} % curly H
+\newcommand{\cone}{\mbox{cone}} % cone
+\newcommand{\excone}{\mbox{excone}} % excone
+\newcommand{\xhat}{\hat{\mathbf{x}}} % xhat
+\newcommand{\A}{\mathbf{A}} % bold A
+\newcommand{\B}{\mathbf{B}} % bold B
+\newcommand{\C}{\mathbf{C}} % bold C
+\newcommand{\D}{\mathbf{D}} % bold D
+\newcommand{\U}{\mathbf{U}} % bold D
+\newcommand{\x}{\mathbf{x}} % bold x
+\newcommand{\bu}{\mathbf{u}} % bold u
+\newcommand{\y}{\mathbf{y}} % bold y
+\newcommand{\w}{\mathbf{w}} % bold w
+\newcommand{\z}{\mathbf{z}} % bold z
+\newcommand{\bP}{\mathbf{P}} % bold P
+\newcommand{\Q}{\mathbf{Q}} % bold Q
+\newcommand{\tr}{\mbox{tr}} % trace
+\newcommand{\K}{\mbf{K}} % bold K
+\newcommand{\E}{\mbf{E}} % bold E
+\newcommand{\bS}{\mbf{S}} % bold S
+\newcommand{\R}{\mbf{R}}
+\newcommand{\F}{\mbf{F}}
+\newcommand{\bH}{\mbf{H}}
+\newcommand{\Z}{\mbf{Z}}
+\newcommand{\T}{\mbf{T}}
+\newcommand{\Qt}{\widetilde{\Q}}
+\newcommand{\Kt}{\widetilde{\K}}
+\newcommand{\dQ}{\delta\Q}
+\newcommand{\dK}{\delta\K}
+\newcommand{\He}{\mbox{He}}
+\newcommand{\M}{\mbf{M}}
+\newcommand{\bL}{\mbf{L}}
+\newcommand{\W}{\mbf{W}}
+\newcommand{\V}{\mbf{V}}
+\newcommand{\Pt}{\widetilde{\mbf{P}}}
+\newcommand{\dP}{\delta\mbf{P}}
+\newcommand{\dPt}{\delta\Pt}
+\newcommand{\X}{\mbf{X}}
+\newcommand{\yhat}{\hat{\mbf{y}}}
+\newcommand{\zero}{\mbf{0}}
+\newcommand{\At}{\widetilde{\A}}
+\newcommand{\Bt}{\widetilde{\B}}
+\newcommand{\Ct}{\widetilde{\C}}
+\newcommand{\Qtc}{\widetilde{\Q}_c}
+\newcommand{\Ptc}{\widetilde{\bP}_c}
+\newcommand{\St}{\widetilde{\bS}}
+\newcommand{\Stc}{\widetilde{\bS}_c}
+\newcommand{\Rt}{\widetilde{\R}}
+\newcommand{\Rtc}{\widetilde{\R}_c}
+\newcommand{\one}{\mbf{1}}
+\newcommand{\G}{\mbf{G}}
+\newcommand{\st}{\mbox{s.t.}}
+\newcommand{\bc}{\mbf{c}}
+\newcommand{\e}{\mbf{e}}
+\newcommand{\br}{\mbf{r}}
+\newcommand{\cs}{\mbox{cs}}
+\newcommand{\mbar}{{\bar m}}
+\newcommand{\nbar}{{\bar n}}
+\newcommand{\step}{\hspace{3mm}}
+\newcommand{\Phat}{\widehat{\bP}}
+\newcommand{\Shat}{\widehat{\bS}}
+\newcommand{\Qhat}{\widehat{\Q}}
+\newcommand{\Rhat}{\widehat{\R}}
+\newcommand{\uhat}{\widehat{\bu}}
+\newcommand{\Y}{\mbf{Y}}
+\newcommand{\Pbar}{\bar{\bP}}
+\newcommand{\dPbar}{\delta\bar{\bP}}
+\newcommand{\Rbar}{\bar\R}
+\newcommand{\dF}{\delta\F}
+\newcommand{\dS}{\delta\bS}
+
+
+\begin{document}
+	
+	
+	\title{Quadrotor Controller Design Methodologies}
+	\author{Ethan LoCicero}
+	\date{January 5, 2024}
+	\maketitle
+	
+	\section{Introduction}
+	
+	In this document, two controller design methodologies are laid out: linear quadratic regulator (LQR) and proportional-derivative (PD). Both (but mostly LQR) rely on a dynamic model of the drone. This model is based on the report by Lukkonnen and is simulated in MATLAB in UAVControllerPy/ControlDesign/Main.m and accompanying functions (especially NonlinearStatespace.m). The estimation procedure for most of the relevant parameters (mass, intertia, length, etc) are fairly straightforward. Motor and rotor parameters are more difficult to estimate, so their estimation procedure is outlined in the final section. All papers referenced herein are in the same folder as this document.
+	
+	\section{LQR Controller}
+	
+	The LQR controller solves the optimization problem
+	\begin{align}
+	 \min_{\delta u}	\int_0^\infty \delta x^T Q \delta x + \delta u^T R \delta u dt \label{eqn:LQR}
+	\end{align}
+	where $t$ is time, $Q\geq 0$ and $R>0$ are tune-able matrices that weight the designer's preferences, $\delta x = x - x_e$, where $x$ is the state vector and $x_e$ is the equilibrium state or state setpoint, and $\delta u = u - u_e$, where $u$ is the input vector, and $u_e$ is the equilibrium input or input setpoint. When $\delta x$ is small, then the state is close to the desired setpoint (which means good performance and low flight error), and when $\delta u$ is small, the input is close to the desired setpoint (which means a low energy demand from the controller). Furthermore, when $Q$ is large, the penalty to state deviations is large, so the controller will drive the state to equilibrium faster. Likewise, when $R$ is large, the penalty to the input is large, so the controller will work less hard and drive the state slower. These parameters can be chosen to shape the system response appropriately.
+	
+	\autoref{eqn:LQR} is difficult to solve for a general nonlinear system $\dot{x} = f(x,u)$, but it is simple to solve for a linearized system, $\dot{x} = Ax + Bu$. Given the dynamics matrices $A$ and $B$ and the chosen weight matrices $Q$ and $R$, the controller is $\delta u = -K\delta x$, or equivalently, 
+	\begin{align*}
+		u = u_e - K(x-x_e),
+	\end{align*}
+	where $K$ can be found with the MATLAB function $K = lqr(A,B,Q,R)$ (this solves an algebraic Riccati equation, but that's outside the scope of this document). This control design is implemented around likes 23-32 of the MATLAB code UAVControllerPy/ControlDesign/Main.m. For drone flight, it is implemented in Feedback.py under the function LQR.
+	
+	Note that this controller can be tricky to tune, and can result in response patterns that are not as smooth as some other methods, like PD control. More importantly, when the states are not known exactly but are measured with some filter, the LQR design can easily become unstable.
+	
+	\section{PD}
+	
+	Proportional-derivative control is one of the simplest types of control when restricted to single-input-single-output systems. It simply has the form
+		$\delta u = -K_P\delta x - K_D \delta \dot{x} $
+	where $\delta \dot{x} = \dot{x} - \dot{x}_e$, where $\dot{x}$ is the time rate of change of the state, $\dot{x}_e$ is the equilibrium value or setpoint, and $K_P$ and $K_D$ are tune-able parameters. Loosely, this says if $x$ is less than it should be, apply a proportional positive force and vice versa, and if $x$ is traveling too fast, reduce that force proportionally and vice versa. If $x$ and $u$ are scalars, then there are only two parameters to tune, which is easily done with Zeigler-Nichol's tuning method (increase $K_P$ until boardline unstable, then increase $K_D$ until sufficiently damped). 
+	
+	However, for multiple-input-multiple-output systems, it is much more challenging to tune a PD controller. To deal with this, we'll follow Mahony, Kumar, and Corke's method, which decouples the problem. 
+	
+	First, they provide PDs controller to set the commanded rate of change in the x and y directions:
+	\begin{align*}
+		\ddot{x}_{com} &= K_{P,x}\delta x + K_{D,x}\delta \dot{x} \\
+		\ddot{y}_{com} &= K_{P,y}\delta y + K_{D,y}\delta \dot{y}
+	\end{align*}
+	These equations say that the further away the drone is from the desired xy position, the faster we will try to move towards that position, but if we're moving too fast, we'll slow down.
+	
+	Next, we note that the acceleration in the xy plane depends on the roll and pitch angles, so we'll use the commanded xy accelerations to define the roll and pitch angle setpoints. 
+	\begin{align*}
+		\phi_e &= (\ddot{x}_{com} \sin \psi_e - \ddot{y}_{com} \cos \psi_e)/g \\	
+		\theta_e &= (\ddot{x}_{com} \cos \psi_e + \ddot{y}_{com} \sin \psi_e)/g		
+	\end{align*}
+	where $g$ is gravity, and $\psi_e$ is the yaw setpoint which is given in the initialization. Now that the desired roll pitch and yaw are known, we can design a PD controller for the attitude and z position. The roll depends only on the torque about the roll axis, and likewise for pitch and yaw, so these are independent equations:
+	\begin{align*}
+		\tau_\phi &= -K_{P,\phi} \delta \phi - K_{D,\phi}\delta \dot{\phi} \\
+		\tau_\theta &= -K_{P,\theta} \delta \theta - K_{D,\theta}\delta \dot{\theta} \\
+		\tau_\psi &= -K_{P,\psi} \delta \psi - K_{D,\psi}\delta \dot{\psi}
+	\end{align*}
+	The z position depends on the total lift of the motors minus gravity, so the PD controller for z requires an offset term to compensate for the weight. This results in:
+	\begin{align*}
+		F &= mg - K_{P,z}\delta z - K_{D,z}\delta \dot{z} \\
+	\end{align*}
+	We need to convert the lift $F$ and torques $tau_i$ into rotor speed. Creating the vector 
+	\begin{align*}
+		\xi  = \bmat{L \\ \tau_\phi \\ \tau_\theta \\ \tau_\psi},
+	\end{align*}
+	the rotor speeds that generate the approprate torque and lift can be calculated as 
+	\begin{align*}
+		\omega_{com} &= \sqrt{\Gamma \xi}
+	\end{align*}
+	where 
+	\begin{align*}
+		\Gamma = \bmat{k & k& k & k \\ 0 & -lk & 0 & lk \\ -lk & 0 & lk & 0 \\ b & -b & b & -b}^{-1}
+	\end{align*}
+	is the matrix that satisfies $\xi = \Gamma^{-1}\omega_{com}^2$, $k$ is the lift coefficient, $b$ is the drag coefficient, and $l$ is the distance from center of mass to center of rotor (this is just stacking together the equations for rotor speed to lift and torque). Lastly, rotor speed must be converted to pusewidth, which is done with 
+	\begin{align*}
+		PW = V_{ff}(\omega_{com}) + K_{P,m}(\omega_{com} - \omega_{meas})
+	\end{align*}
+	where $V_{ff}$ is a nonlinear function of motor parameters defined in the next section, and the second term is a proportional controller that is meant to compensate for errors in the commanded and actual motor speed. However, we currently have no way of measuring the actual rotor speed in real time, so this term is omitted.
+
+	
+	\section{Rotor and Motor System Identification}
+	First and simplest, from Luukkonen, $F = k\omega^2$. So the lift coefficient is estimated by strapping the motor to a scale, measuring the weight difference at several motor speeds, and then applying a linear regression to $F$ vs $\omega^2$, constrained to the origin.
+	
+	Next, the motor dynamics are given in Bouabdallah2004 and Luukkonen as
+	\begin{align*}
+		v &= R i + L \frac{di}{dt} + k_e\omega \\
+		J\dot{\omega} &= \tau_{motor} -\tau_{drag}\\
+		\tau_{motor} &= k_T i \\
+		\tau_{drag} &= b \omega^2
+	\end{align*}
+	where $i$ current, $v$ voltage delivered to motors, $\omega$ motor speed, $R$ resistance, $L$ inductance, $k_e$ back EMF constant, $J$ is rotor inertia, $\tau_{motor}$ is the motor torque, $k_T$ is the torque constant, $\tau_{drag}$ is the rotor drag torque, and $b$ is the drag coefficient.  Evaluating this at equilibrium gives
+	\begin{align*}
+		v = \frac{Rb}{k_T} \omega^2 + k_e \omega
+	\end{align*}
+	Fitting a quadratic fixed at the origin to $v$ vs $\omega$ provides estimates of $k_e$ and $ \frac{Rb}{k_T}$. However, voltage delivered to motors is not directly known. Instead, we know pulsewidth commands. Pulsewidth is converted to voltage by
+	\begin{align*}
+		v = \frac{v_{battery}}{PW_{max}-PW_{min}}(PW-PW_{min})
+	\end{align*}
+	where $v_{battery}$ is the current battery power, which is measured during the experiments. 
+	
+	Next, $R$ can be measured directly with an Ohmmeter (or indirectly with a voltmeter and ammeter). The terms $k_e$ and $k_T$ are algebraically related, because $k_e = V/\omega$ and $k_T = \tau_{motor}/i$. Electrical and mechanical power balance gives $\sqrt{3}vi = \frac{2\pi}{60}\omega \tau$, where the left hand side is rms electrical power and the right hand side is mechanical power in Nm/s. Rearranging gives
+	\begin{align*}
+		k_T = \frac{60\sqrt{3}}{2\pi}k_e
+	\end{align*} 
+	Then $b$ is solved for from the known value of $\frac{Rb}{k_T}$. The estimated parameters are stored in System Identification/Drone Paramters.xlsx. They are calculated in System Identification/MotorCharacterization.m using data from System Identification/MotorTestData.m.
+	
+\end{document}
