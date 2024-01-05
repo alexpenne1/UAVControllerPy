@@ -26,41 +26,40 @@ def init(bno, mytracker, object_name, CTRLR, error):
     # PWM motor parameters
     PWMparams = {"vmax": 12.5, "RbkT": 1.29e-7 , "ke": 0.000656} 
     # Controller Parameters
-    match CTRLR:
-        case 'LQR':
-            reader = csv.reader(open("ControlDesign/Controllers/LQRcontroller.csv", "r"), delimiter=",")
-            K = list(reader)
-            K = np.array(K).astype("float")
-            feedbackparams = {
-                "K": K,
-                "ue": np.transpose(4414.91*np.array([[1,1,1,1]]))
-            }
-        case 'PD':
-            k = 1.29e-7 # rotor lift coefficient
-            l = .23     # rotor distance from center of mass
-            b = 8.21e-9 # rotor drag coefficient
-            feedbackparams = {
-                "K_x"     : 1,
-                "K_y"     : 1,
-                "K_z"     : 1,
-                "K_dx"    : 1,
-                "K_dy"    : 1,
-                "K_dz"    : 1,
-                "K_roll"  : 1,
-                "K_pitch" : 1,
-                "K_yaw"   : 1,
-                "K_droll" : 1,
-                "K_dpitch": 1,
-                "K_dyaw"  : 1, 
-                "K_motor" : 1,
-                "mg"      : 1,
-                "Gamma"   : np.invert(np.array([[k, k, k, k], [0, -l*k, 0, l*k], [-l*k, 0, l*k, 0], [b, -b, b, -b]])),
-                "sinYawSet" : np.sin(setpoint[5])/9.81,
-                "cosYawSet" : np.cos(setpoint[5])/9.81
-            }
-        case _:
-            print("Ill-defined controller. Terminating program.")
-            error = True
+    if CTRLR == "LQR":
+        reader = csv.reader(open("ControlDesign/Controllers/LQRcontroller.csv", "r"), delimiter=",")
+        K = list(reader)
+        K = np.array(K).astype("float")
+       	feedbackparams = {
+       	    "K": K,
+            "ue": np.transpose(4414.91*np.array([[1,1,1,1]]))
+        }
+    elif CTRLR ==  "PD":
+        k = 1.29e-7 # rotor lift coefficient
+        l = .23     # rotor distance from center of mass
+        b = 8.21e-9 # rotor drag coefficient
+        feedbackparams = {
+            "K_x"     : 1,
+            "K_y"     : 1,
+            "K_z"     : 1,
+            "K_dx"    : 1,
+            "K_dy"    : 1,
+            "K_dz"    : 1,
+            "K_roll"  : 1,
+            "K_pitch" : 1,
+            "K_yaw"   : 1,
+            "K_droll" : 1,
+            "K_dpitch": 1,
+            "K_dyaw"  : 1, 
+            "K_motor" : 1,
+            "mg"      : 1,
+            "Gamma"   : np.invert(np.array([[k, k, k, k], [0, -l*k, 0, l*k], [-l*k, 0, l*k, 0], [b, -b, b, -b]])),
+            "sinYawSet" : np.sin(setpoint[5])/9.81,
+            "cosYawSet" : np.cos(setpoint[5])/9.81
+        }
+    else:
+        print("Ill-defined controller. Terminating program.")
+        error = True
     return setpoint, state, cur_time, feedbackparams, PWMparams, filterparams, filter_states, yaw_looper, rawyaw, error
 
 def FilterSignal(signal_in,dt,filter_state,T,K):
