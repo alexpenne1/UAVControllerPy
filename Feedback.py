@@ -19,8 +19,8 @@ def PD(dx, FBp, PWMp):
     tau1 = FBp["K_roll"]*Delta_roll + FBp["K_droll"]*dx[9]
     tau2 = FBp["K_pitch"]*Delta_pitch + FBp["K_dpitch"]*dx[10]
     tau3 = FBp["K_yaw"]*dx[5] + FBp["K_dyaw"]*dx[11]
-    Tau = np.array([[lift],[tau1],[tau2],[tau3]])
-    wsquared = FBp["Gamma"]*Tau
+    Tau = np.array([lift,tau1,tau2,tau3])
+    wsquared = np.matmul(FBp["Gamma"],Tau)
     wsquared[wsquared < 0] = 0
     w = np.sqrt(wsquared)
     PW = ctrl.Speed2PW(w,PWMp)
