@@ -36,6 +36,9 @@ def init(bno, mytracker, object_name, CTRLR, error):
                 "ue": np.transpose(4414.91*np.array([[1,1,1,1]]))
             }
         case 'PD':
+            k = 1.29e-7 # rotor lift coefficient
+            l = .23     # rotor distance from center of mass
+            b = 8.21e-9 # rotor drag coefficient
             feedbackparams = {
                 "K_x"     : 1,
                 "K_y"     : 1,
@@ -51,7 +54,7 @@ def init(bno, mytracker, object_name, CTRLR, error):
                 "K_dyaw"  : 1, 
                 "K_motor" : 1,
                 "mg"      : 1,
-                "Gamma"   : 1,
+                "Gamma"   : np.invert(np.array([[k, k, k, k], [0, -l*k, 0, l*k], [-l*k, 0, l*k, 0], [b, -b, b, -b]])),
                 "sinYawSet" : np.sin(setpoint[5])/9.81,
                 "cosYawSet" : np.cos(setpoint[5])/9.81
             }

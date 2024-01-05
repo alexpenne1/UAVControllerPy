@@ -18,10 +18,10 @@ import Vicon
 import ESC
 import Controller as ctrl
 
-error = False
 calibrate = False
 CTRLR = 'PD'
 
+error = False
 match CTRLR:
     case 'LQR':
         from Feedback import LQR as CalculateControlAction
