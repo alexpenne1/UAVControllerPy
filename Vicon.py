@@ -18,15 +18,15 @@ def connectVicon(VICON_TRACKER_IP):
 def GetLinearStates(tracker, object_name, prev_state):
 # (latency, frame number, [[object_name,object_name,x,y,z,roll,pitch,yaw]]) (mm, rad)
     try:
-    	positions = tracker.get_position(object_name)
-    	# Extract x, y, z and return
-    	x = positions[2][0][2]/1000
-    	y = positions[2][0][3]/1000
-    	z = positions[2][0][4]/1000
+        positions = tracker.get_position(object_name)
+        # Extract x, y, z and return
+        x = positions[2][0][2]/1000
+        y = positions[2][0][3]/1000
+        z = positions[2][0][4]/1000
     except:
-	x = prev_state[0]
-	y = prev_state[1]
-	z = prev_state[2]
+        x = prev_state[0]
+        y = prev_state[1]
+        z = prev_state[2]
     return x, y, z
 
 

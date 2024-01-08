@@ -10,7 +10,7 @@ import sys
 
 def init(bno, mytracker, object_name, CTRLR, error):
     # Initial localization
-    x, y, z = Vicon.GetLinearStates(mytracker, object_name)
+    x, y, z = Vicon.GetLinearStates(mytracker, object_name, np.array([0,0,0]))
     yaw, pitch, roll, dyaw, droll, dpitch, a_x, a_y, a_z = BNO.getStates(bno)
     yaw_looper = 0
     rawyaw = yaw
@@ -24,7 +24,7 @@ def init(bno, mytracker, object_name, CTRLR, error):
     filterparams = {"Tx" : .1, "Ty" : .1, "Tz" : .1, "Tdx" : .25, "Tdy" : .25, "Tdz" : .25, 
                     "Kx" : 1,  "Ky" : 1,  "Kz" : 1,  "Kdx" : 1,   "Kdy" : 1,   "Kdz" : 1}
     # PWM motor parameters
-    PWMparams = {"vmax": 12.5, "RbkT": 1.29e-7 , "ke": 0.000656} 
+    PWMparams = {"vmax": 11.9, "RbkT": 1.29e-7 , "ke": 0.000656} 
     # Controller Parameters
     if CTRLR == "LQR":
         reader = csv.reader(open("ControlDesign/Controllers/LQRcontroller.csv", "r"), delimiter=",")
