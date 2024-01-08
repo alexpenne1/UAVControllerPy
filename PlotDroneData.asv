@@ -288,18 +288,13 @@ p.max_PW  = 1900;
 p.min_omega = 0;
 p.max_omega = max(roots([p.R*p.b/p.kT, p.ke, -p.vmax]));
 
-w = (-p.ke + sqrt(p.ke^2 + 4*p.vmax/800*p.RbkT.*(Data(:,14:17)-1100)))./(2*p.RbkT);
-fig_rotorspeed = figure;
-title('Rotor Speeds')
-plot(t_rel,w)
-xlabel('time (s)')
-ylabel('angular velocity (rpm)')
-set(gca,'FontSize',18)
+w = (-p.ke + sqrt(p.ke^2 - 4*p.vmax/800*p.RbkT.*(Data(:,14:17)-1100)))./(2*p.RbkT);
 
 %% Simulation
 x0 = [x(1) y(1) z(1) roll(1) pitch(1) yaw(1) dx(1) dy(1) dz(1) droll(1) dpitch(1) dyaw(1)]';
 tspan = [0 t(end)];
-[t_sim, x_sim]     = ode45(@(t,x) NonlinearStatespace_uncontrolled(t,x,w,p,t_rel), tspan, x0);        % nonlinear simulation
+u = Data(:,14:17);
+[t_sim, x_sim]     = ode45(@(t,x) NonlinearStatespace_uncontrolled(t,x,u,p,t_rel), tspan, x0);        % nonlinear simulation
 fig_sim = figure;
 title('Position in Simulation')
 subplot(2,1,1)

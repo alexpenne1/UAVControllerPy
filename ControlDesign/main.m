@@ -3,7 +3,7 @@ clear
 
 %% Parameters
 p.g   = 9.81;       % gravitational constant, m/s^2
-p.m   = 0.9445;     % mass of drone, kg
+p.m   = 1.1;     % mass of drone, kg
 p.l   = .23;        % distance between rotor and center of mass of quadcopter
 p.Ixx = 0.013022;   % moment of inertia around x axis, kg*m^2
 p.Iyy = 0.012568;   % moment of inertia around y axis, kg*m^2
