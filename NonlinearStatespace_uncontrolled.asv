@@ -1,6 +1,11 @@
-function xdot = NonlinearStatespace_uncontrolled(t,x,udata,p)
+function xdot = NonlinearStatespace_uncontrolled(t,x,udata,p,t_rel)
 
-u = interp1(t,udata,t)
+u(1) = interp1(t_rel,udata(:,1),t);
+u(2) = interp1(t_rel,udata(:,2),t);
+u(3) = interp1(t_rel,udata(:,3),t);
+u(4) = interp1(t_rel,udata(:,4),t);
+
+disp([num2str(u(1)),', ', ])
 
 m =p.m;
 k = p.k; 

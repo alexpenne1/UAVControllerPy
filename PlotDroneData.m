@@ -298,15 +298,15 @@ set(gca,'FontSize',18)
 
 %% Simulation
 x0 = [x(1) y(1) z(1) roll(1) pitch(1) yaw(1) dx(1) dy(1) dz(1) droll(1) dpitch(1) dyaw(1)]';
-tspan = [0 t(end)];
+tspan = [0 t_rel(end)];
 [t_sim, x_sim]     = ode45(@(t,x) NonlinearStatespace_uncontrolled(t,x,w,p,t_rel), tspan, x0);        % nonlinear simulation
 fig_sim = figure;
 title('Position in Simulation')
 subplot(2,1,1)
 hold on
-plot(t_rel,x_sim(1))
-plot(t_rel,x_sim(2))
-plot(t_rel,x_sim(3))
+plot(t_sim,x_sim(:,1))
+plot(t_sim,x_sim(:,2))
+plot(t_sim,x_sim(:,3))
 legend('x','y','z')
 xlabel('time (s)')
 ylabel('position (m)')
@@ -314,9 +314,9 @@ set(gca,'FontSize',18)
 hold off
 subplot(2,1,2)
 hold on
-plot(t_rel,x_sim(4))
-plot(t_rel,x_sim(5))
-plot(t_rel,x_sim(6))
+plot(t_sim,x_sim(:,4))
+plot(t_sim,x_sim(:,5))
+plot(t_sim,x_sim(:,6))
 legend('roll','pitch','yaw')
 xlabel('time (s)')
 ylabel('velocity (m/s)')

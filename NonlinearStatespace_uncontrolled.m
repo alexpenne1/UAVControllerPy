@@ -5,6 +5,7 @@ u(2) = interp1(t_rel,udata(:,2),t);
 u(3) = interp1(t_rel,udata(:,3),t);
 u(4) = interp1(t_rel,udata(:,4),t);
 
+disp([num2str(u(1)),', ',num2str(u(2)),', ',num2str(u(3)),', ',num2str(u(4))])
 
 m =p.m;
 k = p.k; 
