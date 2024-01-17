@@ -47,7 +47,7 @@ with open('data.csv', 'w', newline='') as myfile:
             ESC.writeMotors(mypi,pins,inputs)
             ctrl.SaveData(myfile, cur_time, state, inputs, dx, yaw_looper, rawyaw)
         
-    except KeyboardInterrupt:
+    except:
         pass
     
 ESC.StopMotors(mypi,pins)
