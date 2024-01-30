@@ -1,6 +1,6 @@
-function [t,x,u,pulsewidth] = nlSim_PID(x0,tspan,xe,c,p)
+function [t,x,u,pulsewidth] = nlSim(x0,tspan,xe,c,p)
 
-[t,x] = ode45(@(t, x) NonlinearStatespace_PID(t,x,xe,c,p), tspan, x0);
+[t,x] = ode45(@(t, x) NonlinearStatespace(t,x,xe,c,p), tspan, x0);
 
 u    = zeros(4,length(t));
 pulsewidth = zeros(4,length(t));

@@ -48,16 +48,14 @@ x0    = xe + [0 0 0 pi/12 0 0 0 0 0 0 0 0];                % initial conditions
 u_num = sqrt(p.m*p.g/p.k)/4;            % Nominal force to offset gravity
 ue = 2*[u_num u_num u_num u_num];       % Control equilibrium
 [A,B] = linearize(xe, ue, p);           % Generate Linearized System Model
-%[t_lin, x_lin, u_lin, duty_lin] = LinearSim_PID(tspan, xe', x0', A,B,c,p); % linear simulation
-[t_nl, x_nl, u_nl, duty_nl]     = nlSim_PID(x0',tspan, xe,c,p);        % nonlinear simulation
+[t_lin, x_lin, u_lin, duty_lin] = LinearSim(tspan, xe', x0', A,B,c,p); % linear simulation
+[t_nl, x_nl, u_nl, duty_nl]     = nlSim(x0',tspan, xe,c,p);        % nonlinear simulation
 
 %% Plots
-%{
 figure
 plot(t_lin,x_lin(1:6,:))
 title('Linear Simulation at Equilibrium')
 legend('x','y','z','phi','theta','gamma')
-%}
 figure
 subplot(3,1,1)
 plot(t_nl,x_nl(:,1:6))

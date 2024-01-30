@@ -1,4 +1,4 @@
-function xdot = NonlinearStatespace_PID(t,x,xe,c,p)
+function xdot = NonlinearStatespace(t,x,xe,c,p)
 dx = x-xe';
 ddx_com     = -c.K_x*dx(1) - c.K_dx*dx(7);
 ddy_com     = -c.K_y*dx(2) - c.K_dy*dx(8);

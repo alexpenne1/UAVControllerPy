@@ -85,6 +85,8 @@ fit1     = fit(wSquared',F',fitfun1,'StartPoint',k0);
 t1 = linspace(min(wSquared),max(wSquared),100);
 y2 = fit1.k*t1;
 plot(t1,y2,'r-')
+xlabel('w^2, rpm^2')
+ylabel('Lift Force, N')
 hold off
 k = fit1.k;
 
@@ -115,6 +117,8 @@ fit2    = fit(w',V',fitfun2,'StartPoint',[RbkT0; ke0]);
 t2 = linspace(min(w),max(w),100);
 y2 = fit2.RbkT*t2.^2 + fit2.ke*t2;
 plot(t2,y2,'r-')
+xlabel('w^2, rpm^2')
+ylabel('Voltage, V')
 hold off
 ke = fit2.ke;
 
