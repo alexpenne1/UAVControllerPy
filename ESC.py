@@ -8,17 +8,22 @@ from Adafruit_BNO055 import BNO055
 
 def init():
     # Set pin numbers and connect the motors.
+    relay_pin = 5
     pins = [17, 24, 16, 26] # using GPIO.BCM numbering
-    mypi = connectMotorsPigpio(pins)
+    mypi = connectMotorsPigpio(pins, relay_pin)
     print("Motors connected and callibrated!")
     return pins, mypi
 
-def connectMotorsPigpio(pins):
+def connectMotorsPigpio(pins, relay_pin):
     # Setup and connect motors.
     print("Connecting motors...")
+    
     # Pins are as set on BOARD not by GPIO ordering.
     
     mypi = pigpio.pi()
+
+    mypi.write(relay_pin, 1) # turns on relay 
+
     for pin in pins:
         mypi.set_servo_pulsewidth(pin, 0)
     
