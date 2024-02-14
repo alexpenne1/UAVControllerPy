@@ -1,7 +1,7 @@
 function [t,x,u,pulsewidth] = nlSim(x0,tspan,K,ue,xe,p)
-
+tic
 [t,x] = ode45(@(t, x) NonlinearStatespace(t,x,K,ue,xe,p), tspan, x0);
-
+myT = toc
 u    = zeros(4,length(t));
 pulsewidth = zeros(4,length(t));
 for i = 1:length(t)

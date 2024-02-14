@@ -14,7 +14,7 @@ p.ke = 0.000656;   % back EMF, V/rpm
 p.kT = 0.0108;     % torque constant, Nm/A
 p.R    = .17;       % motor resistance, Ohms
 p.RbkT = p.R*p.b/p.kT;   
-p.vmax = 12.3;      % battery voltage
+p.vmax = 12.6;      % battery voltage
 p.min_PW  = 1100;
 p.max_PW  = 1900;
 p.min_omega = 0;
@@ -32,7 +32,7 @@ K(abs(K)<.0001) = 0;
 writematrix(K,'Controllers/LQRcontroller.csv')
 
 %% Simulations
-tspan = [0 5];                                            % time range
+tspan = [0 1];                                            % time range
 x0    = xe + [0 0 0 0 0 pi/2 0 0 0 0 0 0];                % initial conditions
 [t_lin, x_lin, u_lin, duty_lin] = LinearSim(tspan, xe', x0', A,B,K,p); % linear simulation
 [t_nl, x_nl, u_nl, duty_nl]     = nlSim(x0',tspan,K,ue,xe,p);        % nonlinear simulation
